@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "693846826420",
+    "project_id": "toptechplc",
+    "storage_bucket": "toptechplc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:693846826420:android:59f8c88da328681dc7a6e1",
+        "android_client_info": {
+          "package_name": "et.toptech.attendance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "693846826420-a0ovtuiunout5djavcp16jr4o09fhl0s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFeU6yQNX9touF9UHjom58AzaFUdpGwy0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "693846826420-a0ovtuiunout5djavcp16jr4o09fhl0s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
