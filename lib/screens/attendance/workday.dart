@@ -16,7 +16,8 @@ class _WorkdayState extends State<Workday> {
   late int _step = 1;
 
   void setPermission(id, userId) async {
-    final perm = await _cloudService.isPermissionAllow(id: id, userId: userId);
+    final perm =
+        await _cloudService.isPermissionAllowToUpdate(id: id, userId: userId);
     setState(() => _permission = perm);
     _step--;
   }

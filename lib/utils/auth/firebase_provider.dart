@@ -40,20 +40,13 @@ class FirebaseAuthProvider implements AuthProvider {
       final user = currentUser;
       if (user == null) throw UserNotLoggedInAuthException();
       try {
-        FirebaseStorage().initCreateUserInfo(
+        FirebaseStorage().createUserInfo(
           userId: user.id,
           userName: user.name!,
         );
         FirebaseStorage().createUserWorkday(
           userId: user.id,
           userName: user.name!,
-          monday: true,
-          tuesday: true,
-          wednesday: true,
-          thursday: true,
-          friday: true,
-          saturday: true,
-          sunday: false,
         );
       } catch (_) {}
       return user;

@@ -23,6 +23,26 @@ class _AttendanceState extends State<Attendance> {
   AuthUser get user => FirebaseAuthProvider().currentUser!;
   final _cloudService = FirebaseStorage();
 
+  @override
+  void initState() {
+    setSettingPermission();
+    super.initState();
+  }
+
+  Future<void> setSettingPermission() async {
+    bool sp = await _cloudService.isSettingPermissionAllow;
+    if (sp) {
+      setState(() {
+        popupMenuItem.insert(
+            1,
+            const PopupMenuItem<MenuAction>(
+              value: MenuAction.setting,
+              child: Text("Setting"),
+            ));
+      });
+    }
+  }
+
   Future<void> _submitAttendance() async {
     log("id => ${user.id}");
     // final userIfo = await _cloudService.getUserInfo(userId: user.id);
@@ -36,6 +56,17 @@ class _AttendanceState extends State<Attendance> {
     //       numberOfAbsent: userIfo.numberOfAbsent - 3);
     // }
   }
+
+  var popupMenuItem = [
+    const PopupMenuItem<MenuAction>(
+      value: MenuAction.workday,
+      child: Text("Workday"),
+    ),
+    const PopupMenuItem<MenuAction>(
+      value: MenuAction.logout,
+      child: Text("Logout"),
+    )
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -68,20 +99,7 @@ class _AttendanceState extends State<Attendance> {
               }
             },
             itemBuilder: (context) {
-              return [
-                const PopupMenuItem<MenuAction>(
-                  value: MenuAction.workday,
-                  child: Text("Workday"),
-                ),
-                const PopupMenuItem<MenuAction>(
-                  value: MenuAction.setting,
-                  child: Text("Setting"),
-                ),
-                const PopupMenuItem<MenuAction>(
-                  value: MenuAction.logout,
-                  child: Text("Logout"),
-                ),
-              ];
+              return popupMenuItem;
             },
           )
         ],

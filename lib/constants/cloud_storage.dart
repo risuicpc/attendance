@@ -1,3 +1,4 @@
+const idFieldName = 'id';
 const userIdFieldName = 'user_id';
 const userNameFieldName = 'user_name';
 const numberOfLateFieldName = "number_of_late";
@@ -11,3 +12,8 @@ const thursdayFieldName = "thu";
 const fridayFieldName = "fri";
 const saturdayFieldName = "sat";
 const sundayFieldName = "sun";
+const lastUpdateFieldName = "last_update";
+const updatingFieldName = "updating";
+const startTimeFieldName = "start_time";
+const lateTimeFieldName = "late_time";
+const endTimeFieldName = "end_time";
