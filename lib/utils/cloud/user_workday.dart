@@ -29,6 +29,25 @@ class UserWorkday {
     required this.sunday,
   });
 
+  bool today(String fieldName) {
+    switch (fieldName) {
+      case mondayFieldName:
+        return monday;
+      case tuesdayFieldName:
+        return tuesday;
+      case wednesdayFieldName:
+        return wednesday;
+      case thursdayFieldName:
+        return thursday;
+      case fridayFieldName:
+        return friday;
+      case saturdayFieldName:
+        return saturday;
+      default:
+        return sunday;
+    }
+  }
+
   UserWorkday.fromSnapshot(QueryDocumentSnapshot<Map<String, dynamic>> snapshot)
       : id = snapshot.id,
         userId = snapshot.data()[userIdFieldName],

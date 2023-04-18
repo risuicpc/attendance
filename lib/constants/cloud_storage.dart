@@ -17,3 +17,5 @@ const updatingFieldName = "updating";
 const startTimeFieldName = "start_time";
 const lateTimeFieldName = "late_time";
 const endTimeFieldName = "end_time";
+const dayFieldName = "day";
+const statusFieldName = "status";

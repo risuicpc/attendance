@@ -1,12 +1,9 @@
-import 'dart:developer';
-
 import 'package:attendance/constants/routes.dart';
 import 'package:attendance/enums/menu_action.dart';
 import 'package:attendance/helpers/dialogs/logot_dialog.dart';
+import 'package:attendance/utils/cloud/submit_button.dart';
 import 'package:attendance/utils/auth/bloc/block.dart';
 import 'package:attendance/utils/auth/bloc/event.dart';
-import 'package:attendance/utils/auth/firebase_provider.dart';
-import 'package:attendance/utils/auth/user.dart';
 import 'package:attendance/utils/cloud/firebase_storage.dart';
 import 'package:attendance/utils/cloud/user_info.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +17,8 @@ class Attendance extends StatefulWidget {
 }
 
 class _AttendanceState extends State<Attendance> {
-  AuthUser get user => FirebaseAuthProvider().currentUser!;
   final _cloudService = FirebaseStorage();
+  final List<String> _header = ["Name", "Absent", "Late"];
 
   @override
   void initState() {
@@ -41,20 +38,6 @@ class _AttendanceState extends State<Attendance> {
             ));
       });
     }
-  }
-
-  Future<void> _submitAttendance() async {
-    log("id => ${user.id}");
-    // final userIfo = await _cloudService.getUserInfo(userId: user.id);
-    // log("name => ${userIfo?.userName}");
-    // log("absent => ${userIfo?.numberOfAbsent}");
-    // log("late => ${userIfo?.numberOfLate}");
-    // if (userIfo != null) {
-    //   await _cloudService.updateUserInfo(
-    //       id: userIfo.id,
-    //       numberOfLate: userIfo.numberOfLate - 1,
-    //       numberOfAbsent: userIfo.numberOfAbsent - 3);
-    // }
   }
 
   var popupMenuItem = [
@@ -125,34 +108,17 @@ class _AttendanceState extends State<Attendance> {
                         ),
                       ),
                       DataTable(
-                        columns: const [
-                          DataColumn(
-                            label: Text(
-                              'Name',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                        columns: [
+                          for (var label in _header)
+                            DataColumn(
+                              label: Text(
+                                label,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'Absent',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'Late',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
                         ],
                         rows: [
                           for (var userInfo in allUserInfo)
@@ -165,10 +131,16 @@ class _AttendanceState extends State<Attendance> {
                             ]),
                         ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      Container(
+                        height: 110,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 32,
+                        ),
                         child: ElevatedButton(
-                          onPressed: _submitAttendance,
+                          onPressed: () {
+                            submitAttendance(context, allUserInfo);
+                          },
                           child: const Text("Submit Attendance"),
                         ),
                       )

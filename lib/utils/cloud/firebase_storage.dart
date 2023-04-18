@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:attendance/constants/cloud_storage.dart';
+import 'package:attendance/extensions/date_time.dart';
+import 'package:attendance/utils/cloud/atendance.dart';
 import 'package:attendance/utils/cloud/setting.dart';
 import 'package:attendance/utils/cloud/storage_exceptions.dart';
 import 'package:attendance/utils/cloud/user_info.dart';
@@ -213,7 +217,9 @@ class FirebaseStorage {
 
   Future<bool> get isSettingPermissionAllow async {
     try {
-      await _setting.get().then((value) => value.docs);
+      final id = await _setting
+          .add({updatingFieldName: false}).then((value) => value.id);
+      await _setting.doc(id).delete();
       return true;
     } on FirebaseException catch (e) {
       if (e.code == "permission-denied") return false;
@@ -275,6 +281,45 @@ class FirebaseStorage {
       }
     } catch (_) {
       throw CouldNotUpdateException();
+    }
+  }
+
+  // CRUD FOR ATTENDACE
+  final _attendace = FirebaseFirestore.instance.collection('attendance');
+
+  Future<void> addAttendace({
+    required userId,
+    required status,
+  }) async {
+    final today = await getAttendace(userId: userId);
+    if (today != null) {
+      if (DateTime.now().isAtSameDayAs(today.day)) {
+        throw AlreadyCreatedException();
+      }
+    }
+
+    try {
+      await _attendace.add({
+        userIdFieldName: userId,
+        dayFieldName: DateTime.now(),
+        statusFieldName: status
+      });
+    } catch (_) {
+      throw CouldNotCreateException();
+    }
+  }
+
+  Future<Attendace?> getAttendace({required String userId}) async {
+    try {
+      final userAttendace = await _attendace
+          .where(userIdFieldName, isEqualTo: userId)
+          .get()
+          .then((value) => value.docs.map((e) => Attendace.fromSnapshot(e)));
+      final sort = userAttendace.toList();
+      sort.sort((a, b) => b.day.compareTo(a.day));
+      return sort.first;
+    } catch (_) {
+      return null;
     }
   }
 }

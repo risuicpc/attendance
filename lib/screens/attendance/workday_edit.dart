@@ -1,9 +1,8 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:attendance/helpers/loading/loading_screen.dart';
 import 'package:attendance/utils/cloud/firebase_storage.dart';
 import 'package:attendance/utils/cloud/storage_exceptions.dart';
 import 'package:attendance/utils/cloud/user_workday.dart';
+import 'package:attendance/utils/popup_message.dart';
 import 'package:flutter/material.dart';
 
 class WorkdayEdit extends StatefulWidget {
@@ -36,11 +35,9 @@ class _WorkdayEditState extends State<WorkdayEdit> {
     sunday = widget.workday.sunday;
   }
 
-  Future<void> _workdayUpdate(BuildContext context) async {
-    LoadingScreen().show(
-      context: context,
-      text: 'Changing...',
-    );
+  Future<void> _workdayUpdate() async {
+    if (!context.mounted) return;
+    LoadingScreen().show(context: context, text: 'Changing...');
     final workday = UserWorkday(
         id: widget.workday.id,
         userId: widget.workday.userId,
@@ -54,28 +51,17 @@ class _WorkdayEditState extends State<WorkdayEdit> {
         sunday: sunday);
     try {
       await _cloudService.updateUserWorkday(obj: workday);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.green,
-          content: Text('Workday changed successfully!'),
-        ),
-      );
+      // ignore: use_build_context_synchronously
+      showSuccess(context, 'Workday changed successfully!');
+      // ignore: use_build_context_synchronously
       Navigator.pop(context);
     } on PermissionDeniedException catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.red,
-          content:
-              Text('You does not have permission to change employee workday.'),
-        ),
+      showErorr(
+        context,
+        'You does not have permission to change employee workday.',
       );
     } on CouldNotUpdateException catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.red,
-          content: Text('The process of changing has been canceled.'),
-        ),
-      );
+      showErorr(context, 'The process of changing has been canceled.');
     }
     LoadingScreen().hide();
   }
@@ -109,7 +95,7 @@ class _WorkdayEditState extends State<WorkdayEdit> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
-                onPressed: () => _workdayUpdate(context),
+                onPressed: _workdayUpdate,
                 child: const Text("Update Workday"),
               ),
             ),

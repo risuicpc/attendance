@@ -1,8 +1,10 @@
+import 'package:attendance/extensions/date_time.dart';
 import 'package:attendance/extensions/strings.dart';
 import 'package:attendance/helpers/loading/loading_screen.dart';
 import 'package:attendance/utils/cloud/firebase_storage.dart';
 import 'package:attendance/utils/cloud/setting.dart';
 import 'package:attendance/utils/cloud/storage_exceptions.dart';
+import 'package:attendance/utils/popup_message.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -33,19 +35,27 @@ class _AddSattingState extends State<AddSatting> {
   }
 
   void _submitTime() async {
-    if (!context.mounted) return;
-
-    LoadingScreen().show(context: context, text: "Changing...");
-
     if (starttime.text.isEmpty ||
         latetime.text.isEmpty ||
         endtime.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        backgroundColor: Colors.red,
-        content: Text('Timestamp must not be empty.'),
-      ));
+      showErorr(context, 'Timestamp must not be empty.');
       return;
     }
+
+    if ((starttime.text.toTime.isBefore(endtime.text.toTime) &&
+            (latetime.text.toTime.isBefore(starttime.text.toTime) ||
+                latetime.text.toTime.isAfter(endtime.text.toTime))) ||
+        (latetime.text.toTime.isAfter(endtime.text.toTime) &&
+            latetime.text.toTime.isBefore(starttime.text.toTime))) {
+      showErorr(
+        context,
+        "Ensure that the late time falls within the range of start and end time.",
+      );
+      return;
+    }
+    if (!context.mounted) return;
+
+    LoadingScreen().show(context: context, text: "Changing...");
 
     try {
       if (_setting == null) {
@@ -63,29 +73,17 @@ class _AddSattingState extends State<AddSatting> {
         );
       }
       // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        backgroundColor: Colors.green,
-        content: Text('Timestamp has been updated successfully.'),
-      ));
+      showSuccess(context, 'Timestamp has been updated successfully.');
       widget.setNotify(false);
     } on PermissionDeniedException catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        backgroundColor: Colors.red,
-        content: Text('You does not have permission to set time.'),
-      ));
+      showErorr(context, 'You does not have permission to set time.');
     } on CouldNotCreateException catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.red,
-          content:
-              Text('The process for setting the timestamp has been canceled.'),
-        ),
+      showErorr(
+        context,
+        'The process for setting the timestamp has been canceled.',
       );
     } on AlreadyCreatedException catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        backgroundColor: Colors.red,
-        content: Text('Timestamp has been already created.'),
-      ));
+      showErorr(context, 'Timestamp has been already created.');
     }
     LoadingScreen().hide();
   }

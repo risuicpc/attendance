@@ -42,7 +42,7 @@ class ListSetting extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      'Late time begins at',
+                      'Late time begins after',
                       style: TextStyle(fontSize: 18),
                     ),
                     Text(timestamp!.lateTime.toTime.format(context)),
@@ -53,7 +53,7 @@ class ListSetting extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      'Attendance end at',
+                      'Attendance end after',
                       style: TextStyle(fontSize: 18),
                     ),
                     Text(timestamp!.endTime.toTime.format(context)),
