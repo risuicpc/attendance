@@ -1,10 +1,10 @@
 import 'package:attendance/constants/routes.dart';
 import 'package:attendance/enums/menu_action.dart';
 import 'package:attendance/helpers/dialogs/logot_dialog.dart';
-import 'package:attendance/utils/cloud/submit_button.dart';
 import 'package:attendance/utils/auth/bloc/block.dart';
 import 'package:attendance/utils/auth/bloc/event.dart';
 import 'package:attendance/utils/cloud/firebase_storage.dart';
+import 'package:attendance/utils/cloud/submit_button.dart';
 import 'package:attendance/utils/cloud/user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,7 +18,11 @@ class Attendance extends StatefulWidget {
 
 class _AttendanceState extends State<Attendance> {
   final _cloudService = FirebaseStorage();
-  final List<String> _header = ["Name", "Absent", "Late"];
+  final List<String> _header = [
+    "Name",
+    "Absent",
+    "Late",
+  ];
 
   @override
   void initState() {
@@ -143,7 +147,7 @@ class _AttendanceState extends State<Attendance> {
                           },
                           child: const Text("Submit Attendance"),
                         ),
-                      )
+                      ),
                     ],
                   );
                 } else {

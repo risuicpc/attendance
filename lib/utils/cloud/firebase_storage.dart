@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:attendance/constants/cloud_storage.dart';
 import 'package:attendance/extensions/date_time.dart';
 import 'package:attendance/utils/cloud/atendance.dart';
+import 'package:attendance/utils/cloud/office_location.dart';
 import 'package:attendance/utils/cloud/setting.dart';
 import 'package:attendance/utils/cloud/storage_exceptions.dart';
 import 'package:attendance/utils/cloud/user_info.dart';
@@ -197,8 +196,6 @@ class FirebaseStorage {
 
     try {
       await _setting.add({
-        updatingFieldName: false,
-        lastUpdateFieldName: DateTime.now(),
         startTimeFieldName: startTime,
         lateTimeFieldName: lateTime,
         endTimeFieldName: endTime
@@ -262,33 +259,12 @@ class FirebaseStorage {
     }
   }
 
-  Future<void> updateSetting({
-    required id,
-    required lastUpdate,
-    required updating,
-  }) async {
-    try {
-      await _setting.doc(id).update({
-        lastUpdateFieldName: lastUpdate,
-        updatingFieldName: updating,
-      });
-    } on FirebaseException catch (e) {
-      switch (e.code) {
-        case "permission-denied":
-          throw PermissionDeniedException();
-        default:
-          throw CouldNotUpdateException();
-      }
-    } catch (_) {
-      throw CouldNotUpdateException();
-    }
-  }
-
   // CRUD FOR ATTENDACE
   final _attendace = FirebaseFirestore.instance.collection('attendance');
 
   Future<void> addAttendace({
     required userId,
+    required day,
     required status,
   }) async {
     final today = await getAttendace(userId: userId);
@@ -301,7 +277,7 @@ class FirebaseStorage {
     try {
       await _attendace.add({
         userIdFieldName: userId,
-        dayFieldName: DateTime.now(),
+        dayFieldName: day,
         statusFieldName: status
       });
     } catch (_) {
@@ -318,6 +294,75 @@ class FirebaseStorage {
       final sort = userAttendace.toList();
       sort.sort((a, b) => b.day.compareTo(a.day));
       return sort.first;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  // CRUD FOR LOCATION
+  final _location = FirebaseFirestore.instance.collection('location');
+
+  Future<void> addLocation({
+    required officeName,
+    required latitude,
+    required longitude,
+    required distance,
+  }) async {
+    final exist = await getLocation;
+    if (exist != null) {
+      throw AlreadyCreatedException();
+    }
+
+    try {
+      await _location.add({
+        officeNameFieldName: officeName,
+        longitudeFieldName: longitude,
+        latitudeFieldName: latitude,
+        distanceFieldName: distance
+      });
+    } on FirebaseException catch (e) {
+      switch (e.code) {
+        case "permission-denied":
+          throw PermissionDeniedException();
+        default:
+          throw CouldNotUpdateException();
+      }
+    } catch (_) {
+      throw CouldNotCreateException();
+    }
+  }
+
+  Future<void> updateLocation({
+    required id,
+    required officeName,
+    required latitude,
+    required longitude,
+    required distance,
+  }) async {
+    try {
+      await _location.doc(id).update({
+        officeNameFieldName: officeName,
+        longitudeFieldName: longitude,
+        latitudeFieldName: latitude,
+        distanceFieldName: distance
+      });
+    } on FirebaseException catch (e) {
+      switch (e.code) {
+        case "permission-denied":
+          throw PermissionDeniedException();
+        default:
+          throw CouldNotUpdateException();
+      }
+    } catch (_) {
+      throw CouldNotUpdateException();
+    }
+  }
+
+  Future<OfficeLocation?> get getLocation async {
+    try {
+      final location = await _location.get().then(
+          (value) => value.docs.map((e) => OfficeLocation.fromSnapshot(e)));
+      return location.first;
     } catch (_) {
       return null;
     }

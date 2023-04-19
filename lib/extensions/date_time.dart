@@ -18,6 +18,17 @@ extension DateTimeExtension on DateTime {
   bool isAtSameDayAs(DateTime other) {
     return year == other.year && month == other.month && day == other.day;
   }
+
+  bool isLessThen(DateTime other) {
+    if (year < other.year) return true;
+    if (year == other.year) {
+      if (month < other.month) return true;
+      if (month == other.month) {
+        return day < other.day;
+      }
+    }
+    return false;
+  }
 }
 
 extension TimeOfDayExtension on TimeOfDay {

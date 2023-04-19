@@ -32,7 +32,12 @@ Future<void> submitAttendance(
     return;
   }
 
-  LoadingScreen().show(context: context, text: "Device Validating");
+  LoadingScreen().show(context: context, text: "Checking prev...");
+  await checkPrevAttendance(userInfo);
+
+  if (context.mounted) {
+    LoadingScreen().show(context: context, text: "Device Validating");
+  }
   final validDevice = await deviceValidate(userInfo);
   if (!validDevice[validKey]) {
     if (context.mounted) showErorr(context, validDevice[messageKey]);
@@ -40,7 +45,15 @@ Future<void> submitAttendance(
     return;
   }
 
-  // LoadingScreen().show(context: context, text: "Location Validating");
+  if (context.mounted) {
+    LoadingScreen().show(context: context, text: "Location Validating");
+  }
+  final validLocation = await locationValidation();
+  if (!validLocation[validKey]) {
+    if (context.mounted) showErorr(context, validLocation[messageKey]);
+    LoadingScreen().hide();
+    return;
+  }
 
   if (context.mounted) {
     LoadingScreen().show(context: context, text: "Time Validating");
@@ -82,14 +95,18 @@ Future<void> submitAttendance(
   if (context.mounted) {
     LoadingScreen().show(context: context, text: "Submitting...");
   }
-  int todyLate = userInfo.numberOfLate + (validTime[lateKey] ? 1 : 0);
-  int todyAbsent = userInfo.numberOfAbsent;
+  final refech = await cloudService.getUserInfo(userId: userInfo.id);
+
+  int todyAbsent = refech?.numberOfAbsent ?? userInfo.numberOfAbsent;
+  int todyLate = refech?.numberOfLate ??
+      userInfo.numberOfLate + (validTime[lateKey] ? 1 : 0);
   if (!workday.today(DateTime.now().weekDay)) {
     todyAbsent > 0 ? todyAbsent -= 1 : todyLate = max(0, todyLate - 3);
   }
   try {
     await cloudService.addAttendace(
       userId: user.id,
+      day: DateTime.now(),
       status: validTime[lateKey] ? "late" : "present",
     );
     await cloudService.updateUserInfo(

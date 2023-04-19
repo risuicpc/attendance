@@ -55,12 +55,12 @@ class WorkdayList extends StatelessWidget {
                         child: Column(
                           children: [
                             if (ind == 0) dataColumn("Mon", workday.monday),
-                            if (ind == 0) dataColumn("Tue", workday.tuesday),
-                            if (ind == 0) dataColumn("Wed", workday.wednesday),
-                            if (ind == 1) dataColumn("Thu", workday.thursday),
+                            if (ind == 1) dataColumn("Tue", workday.tuesday),
+                            if (ind == 2) dataColumn("Wed", workday.wednesday),
+                            if (ind == 0) dataColumn("Thu", workday.thursday),
                             if (ind == 1) dataColumn("Fri", workday.friday),
                             if (ind == 2) dataColumn("Sat", workday.saturday),
-                            if (ind == 2) dataColumn("Sun", workday.sunday),
+                            if (ind == 0) dataColumn("Sun", workday.sunday),
                           ],
                         ),
                       ),

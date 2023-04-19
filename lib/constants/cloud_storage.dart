@@ -19,3 +19,7 @@ const lateTimeFieldName = "late_time";
 const endTimeFieldName = "end_time";
 const dayFieldName = "day";
 const statusFieldName = "status";
+const officeNameFieldName = "office_name";
+const latitudeFieldName = "latitude";
+const longitudeFieldName = "longtude";
+const distanceFieldName = "distance";
