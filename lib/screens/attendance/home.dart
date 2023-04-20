@@ -1,11 +1,20 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:attendance/constants/routes.dart';
-import 'package:attendance/enums/menu_action.dart';
+import 'package:attendance/enums/action.dart' show MenuAction;
+import 'package:attendance/extensions/iterable.dart';
 import 'package:attendance/helpers/dialogs/logot_dialog.dart';
+import 'package:attendance/helpers/loading/loading_screen.dart';
+import 'package:attendance/utils/streaming.dart';
 import 'package:attendance/utils/auth/bloc/block.dart';
 import 'package:attendance/utils/auth/bloc/event.dart';
+import 'package:attendance/utils/auth/firebase_provider.dart';
+import 'package:attendance/utils/auth/user.dart';
+import 'package:attendance/utils/cloud/attendace_submitting.dart';
 import 'package:attendance/utils/cloud/firebase_storage.dart';
-import 'package:attendance/utils/cloud/submit_button.dart';
 import 'package:attendance/utils/cloud/user_info.dart';
+import 'package:attendance/helpers/popup_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,20 +26,18 @@ class Attendance extends StatefulWidget {
 }
 
 class _AttendanceState extends State<Attendance> {
+  AuthUser get _user => FirebaseAuthProvider().currentUser!;
   final _cloudService = FirebaseStorage();
-  final List<String> _header = [
-    "Name",
-    "Absent",
-    "Late",
-  ];
+  final _header = ["Name", "Absent", "Late"];
+  UserInfo? currentUserinfo;
 
   @override
   void initState() {
-    setSettingPermission();
+    _setSettingPermission();
     super.initState();
   }
 
-  Future<void> setSettingPermission() async {
+  Future<void> _setSettingPermission() async {
     bool sp = await _cloudService.isSettingPermissionAllow;
     if (sp) {
       setState(() {
@@ -41,6 +48,33 @@ class _AttendanceState extends State<Attendance> {
               child: Text("Setting"),
             ));
       });
+    }
+  }
+
+  Future<void> _setCurrentUserInfo(Iterable<UserInfo> allUserInfo) async {
+    currentUserinfo = allUserInfo.firstWhereOrNull((e) => e.userId == _user.id);
+    if (currentUserinfo != null) return;
+
+    try {
+      await _cloudService.createUserInfo(
+        userId: _user.id,
+        userName: _user.name!,
+      );
+      currentUserinfo = await _cloudService.getUserInfo(userId: _user.id);
+    } catch (_) {}
+    return;
+  }
+
+  void _handleSubmit() async {
+    String? successMsg;
+    try {
+      await attendanceSubmitting(context, currentUserinfo);
+      successMsg = "The attendance was submitted successfully.";
+    } catch (e) {
+      showErorr(context, e.toString());
+    } finally {
+      if (successMsg != null) showSuccess(context, successMsg);
+      LoadingScreen().hide();
     }
   }
 
@@ -99,6 +133,7 @@ class _AttendanceState extends State<Attendance> {
               case ConnectionState.active:
                 if (snapshot.hasData) {
                   final allUserInfo = snapshot.data as Iterable<UserInfo>;
+                  _setCurrentUserInfo(allUserInfo);
                   return ListView(
                     padding: const EdgeInsets.symmetric(vertical: 32),
                     children: <Widget>[
@@ -141,11 +176,32 @@ class _AttendanceState extends State<Attendance> {
                           horizontal: 32,
                           vertical: 32,
                         ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            submitAttendance(context, allUserInfo);
+                        child: StreamBuilder<bool>(
+                          stream: getAttendancePermission(true),
+                          builder: (context, snapshot) {
+                            switch (snapshot.connectionState) {
+                              case ConnectionState.active:
+                              case ConnectionState.done:
+                                if (snapshot.hasData) {
+                                  return ElevatedButton(
+                                    onPressed: snapshot.data ?? false
+                                        ? _handleSubmit
+                                        : null,
+                                    child: const Text("Submit Attendance"),
+                                  );
+                                } else {
+                                  return const ElevatedButton(
+                                    onPressed: null,
+                                    child: Text("Submit Attendance"),
+                                  );
+                                }
+                              default:
+                                return const ElevatedButton(
+                                  onPressed: null,
+                                  child: Text("Submit Attendance"),
+                                );
+                            }
                           },
-                          child: const Text("Submit Attendance"),
                         ),
                       ),
                     ],

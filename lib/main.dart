@@ -1,7 +1,7 @@
 import 'package:attendance/constants/routes.dart';
 import 'package:attendance/helpers/loading/loading_screen.dart';
 import 'package:attendance/screens/attendance/location.dart';
-import 'package:attendance/screens/attendance/dashboard.dart';
+import 'package:attendance/screens/attendance/home.dart';
 import 'package:attendance/screens/attendance/setting.dart';
 import 'package:attendance/screens/attendance/workday_edit.dart';
 import 'package:attendance/screens/attendance/workday.dart';
@@ -27,11 +27,11 @@ void main() {
       ),
       home: BlocProvider<AuthBloc>(
         create: (context) => AuthBloc(FirebaseAuthProvider()),
-        child: const HomePage(),
+        child: const BlocPage(),
       ),
       routes: {
         locationRoute: (context) => const Location(),
-        settingRoute: (context) => const Setting(),
+        settingRoute: (context) => const SettingScreen(),
         workdayListRoute: (context) => const Workday(),
       },
       onGenerateRoute: (settings) {
@@ -52,8 +52,8 @@ void main() {
   );
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+class BlocPage extends StatelessWidget {
+  const BlocPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

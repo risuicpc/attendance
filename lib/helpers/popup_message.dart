@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart'
+    show BuildContext, ScaffoldMessenger, SnackBar, Colors, Text;
 
 void showErorr(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(

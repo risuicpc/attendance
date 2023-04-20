@@ -2,6 +2,7 @@ import 'package:attendance/extensions/velidation/email.dart';
 import 'package:attendance/utils/auth/bloc/block.dart';
 import 'package:attendance/utils/auth/bloc/event.dart';
 import 'package:attendance/utils/auth/bloc/state.dart';
+import 'package:attendance/helpers/popup_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -37,22 +38,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               email = _email.text;
             });
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                backgroundColor: Colors.green,
-                content: Text('Password reset link sent successfully!'),
-              ),
-            );
+            showErorr(context, "Password reset link sent successfully!");
             _email.clear();
           }
           if (state.exception != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                backgroundColor: Colors.red,
-                content: Text(
-                    "We could not process your request. Please make sure that you are a registered user!"),
-              ),
-            );
+            showErorr(context,
+                "We could not process your request. Please make sure that you are a registered user!");
           }
         }
       },

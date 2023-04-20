@@ -139,8 +139,8 @@ class FirebaseStorage {
   }
 
   Future<bool> isPermissionAllowToUpdate({
-    required id,
-    required userId,
+    required String id,
+    required String userId,
   }) async {
     try {
       await _userWorkday.doc(id).update({
@@ -185,9 +185,9 @@ class FirebaseStorage {
   final _setting = FirebaseFirestore.instance.collection('setting');
 
   Future<void> createSetting({
-    required startTime,
-    required lateTime,
-    required endTime,
+    required String startTime,
+    required String lateTime,
+    required String endTime,
   }) async {
     final setting = await getSetting;
     if (setting != null) {
@@ -214,9 +214,7 @@ class FirebaseStorage {
 
   Future<bool> get isSettingPermissionAllow async {
     try {
-      final id = await _setting
-          .add({updatingFieldName: false}).then((value) => value.id);
-      await _setting.doc(id).delete();
+      await _setting.doc("id").get();
       return true;
     } on FirebaseException catch (e) {
       if (e.code == "permission-denied") return false;
@@ -236,10 +234,10 @@ class FirebaseStorage {
   }
 
   Future<void> updateSettingTimestamp({
-    required id,
-    required startTime,
-    required lateTime,
-    required endTime,
+    required String id,
+    required String startTime,
+    required String lateTime,
+    required String endTime,
   }) async {
     try {
       await _setting.doc(id).update({
@@ -263,9 +261,9 @@ class FirebaseStorage {
   final _attendace = FirebaseFirestore.instance.collection('attendance');
 
   Future<void> addAttendace({
-    required userId,
-    required day,
-    required status,
+    required String userId,
+    required DateTime day,
+    required String status,
   }) async {
     final today = await getAttendace(userId: userId);
     if (today != null) {
@@ -303,10 +301,10 @@ class FirebaseStorage {
   final _location = FirebaseFirestore.instance.collection('location');
 
   Future<void> addLocation({
-    required officeName,
-    required latitude,
-    required longitude,
-    required distance,
+    required String officeName,
+    required double latitude,
+    required double longitude,
+    required double distance,
   }) async {
     final exist = await getLocation;
     if (exist != null) {
@@ -333,11 +331,11 @@ class FirebaseStorage {
   }
 
   Future<void> updateLocation({
-    required id,
-    required officeName,
-    required latitude,
-    required longitude,
-    required distance,
+    required String id,
+    required String officeName,
+    required double latitude,
+    required double longitude,
+    required double distance,
   }) async {
     try {
       await _location.doc(id).update({
@@ -365,6 +363,16 @@ class FirebaseStorage {
       return location.first;
     } catch (_) {
       return null;
+    }
+  }
+
+  Future<bool> get isLocationPermissionAllow async {
+    try {
+      await _location.doc("id").get();
+      return true;
+    } on FirebaseException catch (e) {
+      if (e.code == "permission-denied") return false;
+      return true;
     }
   }
 }

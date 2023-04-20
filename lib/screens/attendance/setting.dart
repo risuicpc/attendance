@@ -1,16 +1,16 @@
-import 'package:attendance/screens/attendance/add_setting.dart';
-import 'package:attendance/screens/attendance/list_setting.dart';
+import 'package:attendance/screens/attendance/setting_add.dart';
+import 'package:attendance/screens/attendance/setting_list.dart';
 import 'package:attendance/utils/cloud/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
-class Setting extends StatefulWidget {
-  const Setting({super.key});
+class SettingScreen extends StatefulWidget {
+  const SettingScreen({super.key});
 
   @override
-  State<Setting> createState() => _SettingState();
+  State<SettingScreen> createState() => _SettingScreenState();
 }
 
-class _SettingState extends State<Setting> {
+class _SettingScreenState extends State<SettingScreen> {
   final _cloudService = FirebaseStorage();
   late bool updating = false;
 

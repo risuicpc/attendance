@@ -1,8 +1,9 @@
+import 'package:attendance/enums/action.dart' show WeekdayAction;
 import 'package:attendance/helpers/loading/loading_screen.dart';
 import 'package:attendance/utils/cloud/firebase_storage.dart';
 import 'package:attendance/utils/cloud/storage_exceptions.dart';
 import 'package:attendance/utils/cloud/user_workday.dart';
-import 'package:attendance/utils/popup_message.dart';
+import 'package:attendance/helpers/popup_message.dart';
 import 'package:flutter/material.dart';
 
 class WorkdayEdit extends StatefulWidget {
@@ -39,22 +40,22 @@ class _WorkdayEditState extends State<WorkdayEdit> {
     if (!context.mounted) return;
     LoadingScreen().show(context: context, text: 'Changing...');
     final workday = UserWorkday(
-        id: widget.workday.id,
-        userId: widget.workday.userId,
-        userName: widget.workday.userName,
-        monday: monday,
-        tuesday: tuesday,
-        wednesday: wednesday,
-        thursday: thursday,
-        friday: friday,
-        saturday: saturday,
-        sunday: sunday);
+      id: widget.workday.id,
+      userId: widget.workday.userId,
+      userName: widget.workday.userName,
+      monday: monday,
+      tuesday: tuesday,
+      wednesday: wednesday,
+      thursday: thursday,
+      friday: friday,
+      saturday: saturday,
+      sunday: sunday,
+    );
+
+    String? successMessage;
     try {
       await _cloudService.updateUserWorkday(obj: workday);
-      // ignore: use_build_context_synchronously
-      showSuccess(context, 'Workday changed successfully!');
-      // ignore: use_build_context_synchronously
-      Navigator.pop(context);
+      successMessage = 'Workday changed successfully!';
     } on PermissionDeniedException catch (_) {
       showErorr(
         context,
@@ -62,6 +63,11 @@ class _WorkdayEditState extends State<WorkdayEdit> {
       );
     } on CouldNotUpdateException catch (_) {
       showErorr(context, 'The process of changing has been canceled.');
+    } finally {
+      if (successMessage != null) {
+        showSuccess(context, successMessage);
+        Navigator.pop(context);
+      }
     }
     LoadingScreen().hide();
   }
@@ -82,13 +88,13 @@ class _WorkdayEditState extends State<WorkdayEdit> {
               padding: const EdgeInsets.symmetric(horizontal: 80),
               child: Column(
                 children: [
-                  checkBox("Monday"),
-                  checkBox("Tuesday"),
-                  checkBox("Wednesday"),
-                  checkBox("Thursday"),
-                  checkBox("Friday"),
-                  checkBox("Saturday"),
-                  checkBox("Sunday"),
+                  checkBox(WeekdayAction.monday),
+                  checkBox(WeekdayAction.tuesday),
+                  checkBox(WeekdayAction.wednesday),
+                  checkBox(WeekdayAction.thursday),
+                  checkBox(WeekdayAction.friday),
+                  checkBox(WeekdayAction.saturday),
+                  checkBox(WeekdayAction.sunday),
                 ],
               ),
             ),
@@ -105,7 +111,7 @@ class _WorkdayEditState extends State<WorkdayEdit> {
     );
   }
 
-  Row checkBox(String title) {
+  Row checkBox(WeekdayAction action) {
     Color getColor(Set<MaterialState> states) {
       const Set<MaterialState> interactiveStates = <MaterialState>{
         MaterialState.pressed,
@@ -118,41 +124,65 @@ class _WorkdayEditState extends State<WorkdayEdit> {
       return Colors.green;
     }
 
-    bool value() => title == "Monday"
-        ? monday
-        : title == "Tuesday"
-            ? tuesday
-            : title == "Wednesday"
-                ? wednesday
-                : title == "Thursday"
-                    ? thursday
-                    : title == "Friday"
-                        ? friday
-                        : title == "Saturday"
-                            ? saturday
-                            : sunday;
+    String title() {
+      switch (action) {
+        case WeekdayAction.monday:
+          return "Monday";
+        case WeekdayAction.tuesday:
+          return "Tuesday";
+        case WeekdayAction.wednesday:
+          return "Wednesday";
+        case WeekdayAction.thursday:
+          return "Thursday";
+        case WeekdayAction.friday:
+          return "Friday";
+        case WeekdayAction.saturday:
+          return "Saturday";
+        default:
+          return "Sunday";
+      }
+    }
+
+    bool value() {
+      switch (action) {
+        case WeekdayAction.monday:
+          return monday;
+        case WeekdayAction.tuesday:
+          return tuesday;
+        case WeekdayAction.wednesday:
+          return wednesday;
+        case WeekdayAction.thursday:
+          return thursday;
+        case WeekdayAction.friday:
+          return friday;
+        case WeekdayAction.saturday:
+          return saturday;
+        default:
+          return sunday;
+      }
+    }
 
     void onChanged(bool? value) {
       setState(() {
-        switch (title) {
-          case "Monday":
+        switch (action) {
+          case WeekdayAction.monday:
             monday = value!;
-            break;
-          case "Tuesday":
+            return;
+          case WeekdayAction.tuesday:
             tuesday = value!;
-            break;
-          case "Wednesday":
+            return;
+          case WeekdayAction.wednesday:
             wednesday = value!;
-            break;
-          case "Thursday":
+            return;
+          case WeekdayAction.thursday:
             thursday = value!;
-            break;
-          case "Friday":
+            return;
+          case WeekdayAction.friday:
             friday = value!;
-            break;
-          case "Saturday":
+            return;
+          case WeekdayAction.saturday:
             saturday = value!;
-            break;
+            return;
           default:
             sunday = value!;
         }
@@ -163,7 +193,7 @@ class _WorkdayEditState extends State<WorkdayEdit> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          title,
+          title(),
           style: const TextStyle(fontSize: 16),
         ),
         Checkbox(

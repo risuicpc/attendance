@@ -3,6 +3,7 @@ import 'package:attendance/utils/auth/bloc/block.dart';
 import 'package:attendance/utils/auth/bloc/event.dart';
 import 'package:attendance/utils/auth/bloc/state.dart';
 import 'package:attendance/utils/auth/exceptions.dart';
+import 'package:attendance/helpers/popup_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,44 +40,19 @@ class _RegisterState extends State<Register> {
       listener: (context, state) {
         if (state is AuthStateRegister) {
           if (state.exception is WeakPasswordAuthException) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                backgroundColor: Colors.red,
-                content: Text(
-                    'This password is not secure enough. Please choose another password!'),
-              ),
-            );
+            showErorr(context,
+                "This password is not secure enough. Please choose another password!");
           } else if (state.exception is EmailAlreadyInUseAuthException) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                backgroundColor: Colors.red,
-                content: Text(
-                    'This email is already registered to another user. Please choose another email!'),
-              ),
-            );
+            showErorr(context,
+                "This email is already registered to another user. Please choose another email!");
           } else if (state.exception is GenericAuthException) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                backgroundColor: Colors.red,
-                content: Text("Failed to register. Please try again later!"),
-              ),
-            );
+            showErorr(context, "Failed to register. Please try again later!");
           } else if (state.exception is InvalidEmailAuthException) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                backgroundColor: Colors.red,
-                content: Text(
-                    'The email address you entered appears to be invalid. Please try another email address!'),
-              ),
-            );
+            showErorr(context,
+                "The email address you entered appears to be invalid. Please try another email address!");
           } else if (state.exception is DeviceAlreadyInUseAuthException) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                backgroundColor: Colors.red,
-                content: Text(
-                    'This device is already registered to another user. Kindly utilize a different device!'),
-              ),
-            );
+            showErorr(context,
+                "This device is already registered to another user. Kindly utilize a different device!");
           }
         }
       },

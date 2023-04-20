@@ -2,7 +2,7 @@ import 'package:attendance/helpers/loading/loading_screen.dart';
 import 'package:attendance/utils/cloud/firebase_storage.dart';
 import 'package:attendance/utils/cloud/storage_exceptions.dart';
 import 'package:attendance/utils/determine_position.dart';
-import 'package:attendance/utils/popup_message.dart';
+import 'package:attendance/helpers/popup_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -64,17 +64,17 @@ class _LocationState extends State<Location> {
         await _cloudService.addLocation(
           officeName: _name.text,
           distance: double.parse(_distance.text),
-          latitude: _latitude,
-          longitude: _longitude,
+          latitude: _latitude!,
+          longitude: _longitude!,
         );
         successMessage = "Location information registerd successfully.";
       } else {
         await _cloudService.updateLocation(
-          id: _id,
+          id: _id!,
           officeName: _name.text,
           distance: double.parse(_distance.text),
-          latitude: _latitude,
-          longitude: _longitude,
+          latitude: _latitude!,
+          longitude: _longitude!,
         );
         successMessage = "Location information update successfully.";
       }

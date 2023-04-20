@@ -1,6 +1,7 @@
 import 'package:attendance/utils/auth/bloc/block.dart';
 import 'package:attendance/utils/auth/bloc/event.dart';
 import 'package:attendance/utils/auth/bloc/state.dart';
+import 'package:attendance/helpers/popup_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,13 +18,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthStateNeedsVerification && !state.isLoading) {
-          const msg = 'Email verification link sent successfully!';
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              backgroundColor: Colors.green,
-              content: Text(msg),
-            ),
-          );
+          showSuccess(context, "Email verification link sent successfully!");
         }
       },
       child: Scaffold(

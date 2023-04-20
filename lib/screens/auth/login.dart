@@ -3,6 +3,7 @@ import 'package:attendance/utils/auth/bloc/block.dart';
 import 'package:attendance/utils/auth/bloc/event.dart';
 import 'package:attendance/utils/auth/bloc/state.dart';
 import 'package:attendance/utils/auth/exceptions.dart';
+import 'package:attendance/helpers/popup_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -37,35 +38,15 @@ class _LoginState extends State<Login> {
       listener: (context, state) {
         if (state is AuthStateLoggedOut) {
           if (state.exception is WrongPasswordAuthException) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                backgroundColor: Colors.red,
-                content: Text('Incorrect credentials!'),
-              ),
-            );
+            showErorr(context, "Incorrect credentials!");
           } else if (state.exception is UserNotFoundAuthException) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                backgroundColor: Colors.red,
-                content:
-                    Text('Cannot find a user with the entered credentials!'),
-              ),
-            );
+            showErorr(
+                context, "Cannot find a user with the entered credentials!");
           } else if (state.exception is InvalidEmailAuthException) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                backgroundColor: Colors.red,
-                content: Text(
-                    'The email address you entered appears to be invalid. Please try another email address!'),
-              ),
-            );
+            showErorr(context,
+                "The email address you entered appears to be invalid. Please try another email address!");
           } else if (state.exception is GenericAuthException) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                backgroundColor: Colors.red,
-                content: Text("Authentication failed!"),
-              ),
-            );
+            showErorr(context, "Authentication failed!");
           }
         }
       },

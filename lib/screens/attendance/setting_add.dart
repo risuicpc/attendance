@@ -1,10 +1,11 @@
+import 'package:attendance/enums/action.dart' show TimeAction;
 import 'package:attendance/extensions/date_time.dart';
 import 'package:attendance/extensions/strings.dart';
 import 'package:attendance/helpers/loading/loading_screen.dart';
 import 'package:attendance/utils/cloud/firebase_storage.dart';
 import 'package:attendance/utils/cloud/setting.dart';
 import 'package:attendance/utils/cloud/storage_exceptions.dart';
-import 'package:attendance/utils/popup_message.dart';
+import 'package:attendance/helpers/popup_message.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -56,6 +57,7 @@ class _AddSattingState extends State<AddSatting> {
     if (!context.mounted) return;
 
     LoadingScreen().show(context: context, text: "Changing...");
+    String? successMessage;
 
     try {
       if (_setting == null) {
@@ -66,14 +68,13 @@ class _AddSattingState extends State<AddSatting> {
         );
       } else {
         await _cloudService.updateSettingTimestamp(
-          id: _setting?.id,
+          id: _setting!.id,
           startTime: starttime.text,
           lateTime: latetime.text,
           endTime: endtime.text,
         );
       }
-      // ignore: use_build_context_synchronously
-      showSuccess(context, 'Timestamp has been updated successfully.');
+      successMessage = 'Timestamp has been updated successfully.';
       widget.setNotify(false);
     } on PermissionDeniedException catch (_) {
       showErorr(context, 'You does not have permission to set time.');
@@ -84,41 +85,40 @@ class _AddSattingState extends State<AddSatting> {
       );
     } on AlreadyCreatedException catch (_) {
       showErorr(context, 'Timestamp has been already created.');
+    } finally {
+      if (successMessage != null) showSuccess(context, successMessage);
     }
     LoadingScreen().hide();
   }
 
-  TimeOfDay pickInitialTime(String name) {
-    switch (name) {
-      case "start_time":
+  TimeOfDay _pickInitialTime(TimeAction action) {
+    switch (action) {
+      case TimeAction.starttime:
         return starttime.text.toTime;
-      case "late_time":
+      case TimeAction.latetime:
         return latetime.text.toTime;
       default:
         return endtime.text.toTime;
     }
   }
 
-  void _pickTime(String name) async {
-    if (!context.mounted) return;
-
+  void _pickTime(TimeAction action) async {
     TimeOfDay? pickedTime = await showTimePicker(
-      initialTime: pickInitialTime(name),
+      initialTime: _pickInitialTime(action),
       context: context,
     );
 
-    if (pickedTime != null) {
-      // ignore: use_build_context_synchronously
+    if (pickedTime != null && context.mounted) {
       DateTime parsedTime = DateFormat.jm().parse(pickedTime.format(context));
       String formattedTime = DateFormat('HH:mm:ss').format(parsedTime);
-      switch (name) {
-        case "start_time":
+      switch (action) {
+        case TimeAction.starttime:
           starttime.text = formattedTime;
           break;
-        case "late_time":
+        case TimeAction.latetime:
           latetime.text = formattedTime;
           break;
-        case "end_time":
+        case TimeAction.endtime:
           endtime.text = formattedTime;
           break;
         default:
@@ -126,11 +126,11 @@ class _AddSattingState extends State<AddSatting> {
     }
   }
 
-  TextEditingController _controller(String name) {
-    switch (name) {
-      case "start_time":
+  TextEditingController _controller(TimeAction action) {
+    switch (action) {
+      case TimeAction.starttime:
         return starttime;
-      case "late_time":
+      case TimeAction.latetime:
         return latetime;
       default:
         return endtime;
@@ -155,20 +155,24 @@ class _AddSattingState extends State<AddSatting> {
             itemCount: timeName.length,
             itemBuilder: (context, index) {
               final title = timeName[index];
-              final name = title.replaceAll(" ", "_").toLowerCase();
+              final action = index == 0
+                  ? TimeAction.starttime
+                  : index == 1
+                      ? TimeAction.latetime
+                      : TimeAction.endtime;
               return Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 85,
                   vertical: 8,
                 ),
                 child: TextField(
-                  controller: _controller(name),
+                  controller: _controller(action),
                   decoration: InputDecoration(
                     icon: const Icon(Icons.timer),
                     labelText: title,
                   ),
                   readOnly: true,
-                  onTap: () => _pickTime(name),
+                  onTap: () => _pickTime(action),
                 ),
               );
             },
