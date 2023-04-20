@@ -97,7 +97,9 @@ Future<bool> timeValidation() async {
     } else {
       bool late = now.isAfter(lateTime);
       if (!lateTime.isBefore(startTime)) {
-        late = late || !now.isAfter(endTime);
+        late = late || now.isBefore(startTime);
+      } else {
+        late = late && now.isBefore(startTime);
       }
       return late;
     }

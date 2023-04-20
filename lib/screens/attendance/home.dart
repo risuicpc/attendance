@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:attendance/constants/routes.dart';
 import 'package:attendance/enums/action.dart' show MenuAction;
 import 'package:attendance/extensions/iterable.dart';
 import 'package:attendance/helpers/dialogs/logot_dialog.dart';
 import 'package:attendance/helpers/loading/loading_screen.dart';
-import 'package:attendance/utils/streaming.dart';
+import 'package:attendance/helpers/popup_message.dart';
 import 'package:attendance/utils/auth/bloc/block.dart';
 import 'package:attendance/utils/auth/bloc/event.dart';
 import 'package:attendance/utils/auth/firebase_provider.dart';
@@ -14,7 +13,7 @@ import 'package:attendance/utils/auth/user.dart';
 import 'package:attendance/utils/cloud/attendace_submitting.dart';
 import 'package:attendance/utils/cloud/firebase_storage.dart';
 import 'package:attendance/utils/cloud/user_info.dart';
-import 'package:attendance/helpers/popup_message.dart';
+import 'package:attendance/utils/streaming.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
