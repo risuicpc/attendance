@@ -151,7 +151,6 @@ class _LocationState extends State<Location> {
               children: [
                 FloatingActionButton(
                   elevation: 1,
-                  backgroundColor: Colors.amber.shade300,
                   onPressed: () async {
                     LoadingScreen()
                         .show(context: context, text: "Wait a moment...");
@@ -188,7 +187,7 @@ class _LocationState extends State<Location> {
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: TextButton(
+              child: OutlinedButton(
                 onPressed: _latitude == null ? null : _handleSubmit,
                 child: Text(
                   _id == null ? "Submit" : "Update",

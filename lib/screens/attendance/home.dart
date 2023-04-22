@@ -17,14 +17,14 @@ import 'package:attendance/utils/streaming.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Attendance extends StatefulWidget {
-  const Attendance({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<Attendance> createState() => _AttendanceState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _AttendanceState extends State<Attendance> {
+class _HomeScreenState extends State<HomeScreen> {
   AuthUser get _user => FirebaseAuthProvider().currentUser!;
   final _cloudService = FirebaseStorage();
   final _header = ["Name", "Absent", "Late"];

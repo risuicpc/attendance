@@ -100,7 +100,7 @@ class _WorkdayEditState extends State<WorkdayEdit> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
+              child: OutlinedButton(
                 onPressed: _workdayUpdate,
                 child: const Text("Update Workday"),
               ),
@@ -112,18 +112,6 @@ class _WorkdayEditState extends State<WorkdayEdit> {
   }
 
   Row checkBox(WeekdayAction action) {
-    Color getColor(Set<MaterialState> states) {
-      const Set<MaterialState> interactiveStates = <MaterialState>{
-        MaterialState.pressed,
-        MaterialState.hovered,
-        MaterialState.focused,
-      };
-      if (states.any(interactiveStates.contains)) {
-        return Colors.blue;
-      }
-      return Colors.green;
-    }
-
     String title() {
       switch (action) {
         case WeekdayAction.monday:
@@ -197,8 +185,6 @@ class _WorkdayEditState extends State<WorkdayEdit> {
           style: const TextStyle(fontSize: 16),
         ),
         Checkbox(
-          checkColor: Colors.white,
-          fillColor: MaterialStateProperty.resolveWith(getColor),
           value: value(),
           onChanged: onChanged,
         ),

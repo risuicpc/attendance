@@ -23,8 +23,10 @@ void main() {
     MaterialApp(
       title: 'Attendance',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          colorScheme: ColorScheme.fromSwatch().copyWith(
+        primary: Colors.indigo.shade900,
+        secondary: Colors.amber.shade700,
+      )),
       home: BlocProvider<AuthBloc>(
         create: (context) => AuthBloc(FirebaseAuthProvider()),
         child: const BlocPage(),
@@ -71,7 +73,7 @@ class BlocPage extends StatelessWidget {
       },
       builder: (context, state) {
         if (state is AuthStateLoggedIn) {
-          return const Attendance();
+          return const HomeScreen();
         } else if (state is AuthStateLoggedOut) {
           return const Login();
         } else if (state is AuthStateForgotPassword) {
