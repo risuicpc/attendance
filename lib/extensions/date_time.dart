@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show TimeOfDay;
+import 'package:intl/intl.dart';
 
 extension DateTimeExtension on DateTime {
   String get weekDay {
@@ -19,6 +20,21 @@ extension DateTimeExtension on DateTime {
       }
     }
     return false;
+  }
+
+  String get toWord {
+    String now = DateFormat.yMd().format(
+      DateTime.now().add(const Duration(days: 1)),
+    );
+
+    DateTime today = DateFormat.yMd().parse(now).subtract(
+          const Duration(seconds: 1),
+        );
+
+    int diff = -difference(today).inDays;
+    if (diff == 0) return "Today";
+    if (diff == 1) return "Yesterday";
+    return "$diff days ago";
   }
 }
 

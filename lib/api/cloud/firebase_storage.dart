@@ -1,11 +1,11 @@
-import 'package:attendance/constants/cloud_storage.dart';
-import 'package:attendance/extensions/date_time.dart';
 import 'package:attendance/api/cloud/atendance.dart';
 import 'package:attendance/api/cloud/office_location.dart';
 import 'package:attendance/api/cloud/setting.dart';
 import 'package:attendance/api/cloud/storage_exceptions.dart';
 import 'package:attendance/api/cloud/user_info.dart';
 import 'package:attendance/api/cloud/user_workday.dart';
+import 'package:attendance/constants/cloud_storage.dart';
+import 'package:attendance/extensions/date_time.dart';
 import 'package:attendance/utils/device_info.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -295,6 +295,12 @@ class FirebaseStorage {
     } catch (_) {
       return null;
     }
+  }
+
+  Stream<Iterable<Attendace>> get getAllAttendace {
+    return _attendace
+        .snapshots()
+        .map((event) => event.docs.map((doc) => Attendace.fromSnapshot(doc)));
   }
 
   // CRUD FOR LOCATION

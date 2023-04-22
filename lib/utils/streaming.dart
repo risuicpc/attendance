@@ -7,7 +7,6 @@ Stream<bool> getAttendancePermission(bool emit) async* {
   bool prevValue = false;
 
   while (emit) {
-    await Future<void>.delayed(const Duration(seconds: 1));
     Setting? setting = await FirebaseStorage().getSetting;
     if (setting != null) {
       String start = setting.startTime;
@@ -19,5 +18,6 @@ Stream<bool> getAttendancePermission(bool emit) async* {
         yield currentValue;
       }
     }
+    await Future<void>.delayed(const Duration(seconds: 1));
   }
 }
