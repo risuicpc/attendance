@@ -1,6 +1,6 @@
 import 'package:attendance/helpers/loading/loading_screen.dart';
-import 'package:attendance/utils/cloud/firebase_storage.dart';
-import 'package:attendance/utils/cloud/storage_exceptions.dart';
+import 'package:attendance/api/cloud/firebase_storage.dart';
+import 'package:attendance/api/cloud/storage_exceptions.dart';
 import 'package:attendance/utils/determine_position.dart';
 import 'package:attendance/helpers/popup_message.dart';
 import 'package:flutter/material.dart';

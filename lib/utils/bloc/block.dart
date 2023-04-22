@@ -1,6 +1,6 @@
-import 'package:attendance/utils/auth/bloc/event.dart';
-import 'package:attendance/utils/auth/bloc/state.dart';
-import 'package:attendance/utils/auth/provider.dart';
+import 'package:attendance/utils/bloc/event.dart';
+import 'package:attendance/utils/bloc/state.dart';
+import 'package:attendance/api/auth/provider.dart';
 import 'package:bloc/bloc.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {

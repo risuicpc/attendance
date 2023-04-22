@@ -1,9 +1,9 @@
 import 'package:attendance/extensions/strings.dart';
 import 'package:attendance/firebase.dart';
-import 'package:attendance/utils/auth/exceptions.dart';
-import 'package:attendance/utils/auth/provider.dart';
-import 'package:attendance/utils/auth/user.dart';
-import 'package:attendance/utils/cloud/firebase_storage.dart';
+import 'package:attendance/api/auth/exceptions.dart';
+import 'package:attendance/api/auth/provider.dart';
+import 'package:attendance/api/auth/user.dart';
+import 'package:attendance/api/cloud/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart'
     show FirebaseAuth, FirebaseAuthException;
 import 'package:firebase_core/firebase_core.dart' show Firebase;

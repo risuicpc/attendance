@@ -1,5 +1,5 @@
 import 'package:attendance/extensions/strings.dart';
-import 'package:attendance/utils/cloud/setting.dart';
+import 'package:attendance/api/cloud/setting.dart';
 import 'package:flutter/material.dart';
 
 class ListSetting extends StatelessWidget {

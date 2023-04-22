@@ -2,11 +2,11 @@ import 'dart:math' show max;
 
 import 'package:attendance/extensions/date_time.dart';
 import 'package:attendance/helpers/loading/loading_screen.dart';
-import 'package:attendance/utils/auth/firebase_provider.dart';
-import 'package:attendance/utils/auth/user.dart';
-import 'package:attendance/utils/cloud/firebase_storage.dart';
-import 'package:attendance/utils/cloud/storage_exceptions.dart';
-import 'package:attendance/utils/cloud/user_info.dart';
+import 'package:attendance/api/auth/firebase_provider.dart';
+import 'package:attendance/api/auth/user.dart';
+import 'package:attendance/api/cloud/firebase_storage.dart';
+import 'package:attendance/api/cloud/storage_exceptions.dart';
+import 'package:attendance/api/cloud/user_info.dart';
 import 'package:attendance/utils/validation.dart';
 import 'package:flutter/material.dart';
 

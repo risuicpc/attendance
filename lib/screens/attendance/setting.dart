@@ -1,6 +1,6 @@
 import 'package:attendance/screens/attendance/setting_add.dart';
 import 'package:attendance/screens/attendance/setting_list.dart';
-import 'package:attendance/utils/cloud/firebase_storage.dart';
+import 'package:attendance/api/cloud/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 class SettingScreen extends StatefulWidget {

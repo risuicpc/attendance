@@ -1,7 +1,7 @@
 import 'package:attendance/extensions/date_time.dart';
 import 'package:attendance/extensions/strings.dart';
-import 'package:attendance/utils/cloud/firebase_storage.dart';
-import 'package:attendance/utils/cloud/setting.dart';
+import 'package:attendance/api/cloud/firebase_storage.dart';
+import 'package:attendance/api/cloud/setting.dart';
 
 Stream<bool> getAttendancePermission(bool emit) async* {
   bool prevValue = false;
@@ -16,8 +16,8 @@ Stream<bool> getAttendancePermission(bool emit) async* {
       bool currentValue = start.toTime.isAllowSubmitAttendance(end.toTime);
       if (prevValue != currentValue) {
         prevValue = currentValue;
+        yield currentValue;
       }
-      yield currentValue;
     }
   }
 }

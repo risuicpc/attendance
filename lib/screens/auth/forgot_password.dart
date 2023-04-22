@@ -1,7 +1,7 @@
 import 'package:attendance/extensions/velidation/email.dart';
-import 'package:attendance/utils/auth/bloc/block.dart';
-import 'package:attendance/utils/auth/bloc/event.dart';
-import 'package:attendance/utils/auth/bloc/state.dart';
+import 'package:attendance/utils/bloc/block.dart';
+import 'package:attendance/utils/bloc/event.dart';
+import 'package:attendance/utils/bloc/state.dart';
 import 'package:attendance/helpers/popup_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

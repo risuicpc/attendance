@@ -2,8 +2,8 @@ import 'dart:math' show sin, cos, pi, asin, sqrt;
 
 import 'package:attendance/extensions/date_time.dart';
 import 'package:attendance/extensions/strings.dart';
-import 'package:attendance/utils/cloud/firebase_storage.dart';
-import 'package:attendance/utils/cloud/user_info.dart';
+import 'package:attendance/api/cloud/firebase_storage.dart';
+import 'package:attendance/api/cloud/user_info.dart';
 import 'package:attendance/utils/determine_position.dart';
 import 'package:attendance/utils/device_info.dart';
 import 'package:flutter/material.dart';

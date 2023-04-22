@@ -9,11 +9,11 @@ import 'package:attendance/screens/auth/forgot_password.dart';
 import 'package:attendance/screens/auth/login.dart';
 import 'package:attendance/screens/auth/register.dart';
 import 'package:attendance/screens/auth/verify_email.dart';
-import 'package:attendance/utils/auth/bloc/block.dart';
-import 'package:attendance/utils/auth/bloc/event.dart';
-import 'package:attendance/utils/auth/bloc/state.dart';
-import 'package:attendance/utils/auth/firebase_provider.dart';
-import 'package:attendance/utils/cloud/user_workday.dart';
+import 'package:attendance/utils/bloc/block.dart';
+import 'package:attendance/utils/bloc/event.dart';
+import 'package:attendance/utils/bloc/state.dart';
+import 'package:attendance/api/auth/firebase_provider.dart';
+import 'package:attendance/api/cloud/user_workday.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

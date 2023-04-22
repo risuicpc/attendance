@@ -1,4 +1,4 @@
-import 'package:attendance/utils/auth/user.dart';
+import 'package:attendance/api/auth/user.dart';
 import 'package:flutter/foundation.dart' show immutable;
 
 @immutable
