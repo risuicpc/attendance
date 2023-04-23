@@ -4,6 +4,7 @@ import 'package:attendance/api/cloud/firebase_storage.dart';
 import 'package:attendance/api/cloud/storage_exceptions.dart';
 import 'package:attendance/api/cloud/user_workday.dart';
 import 'package:attendance/helpers/popup_message.dart';
+import 'package:attendance/widget/appbar.dart';
 import 'package:flutter/material.dart';
 
 class WorkdayEdit extends StatefulWidget {
@@ -75,7 +76,7 @@ class _WorkdayEditState extends State<WorkdayEdit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Edit Workday")),
+      appBar: MyAppBar(titleText: "Edit Workday"),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Column(

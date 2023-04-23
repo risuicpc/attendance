@@ -119,7 +119,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ));
       }
       try {
-        await Future.delayed(const Duration(seconds: 1));
+        await Future.delayed(const Duration(milliseconds: 200));
         await provider.logOut();
         emit(const AuthStateLoggedOut(isLoading: false));
       } on Exception catch (e) {

@@ -3,6 +3,7 @@ import 'package:attendance/utils/bloc/block.dart';
 import 'package:attendance/utils/bloc/event.dart';
 import 'package:attendance/utils/bloc/state.dart';
 import 'package:attendance/helpers/popup_message.dart';
+import 'package:attendance/widget/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -48,9 +49,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Forgot Password"),
-        ),
+        appBar: MyAppBar(titleText: "Forgot Password"),
         body: Padding(
           padding: const EdgeInsets.only(left: 16, right: 16, top: 100),
           child: SingleChildScrollView(

@@ -4,6 +4,7 @@ import 'package:attendance/utils/bloc/event.dart';
 import 'package:attendance/utils/bloc/state.dart';
 import 'package:attendance/api/auth/exceptions.dart';
 import 'package:attendance/helpers/popup_message.dart';
+import 'package:attendance/widget/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -57,9 +58,7 @@ class _RegisterState extends State<Register> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Register"),
-        ),
+        appBar: MyAppBar(titleText: "Register"),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(

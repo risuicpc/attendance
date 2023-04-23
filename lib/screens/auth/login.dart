@@ -4,6 +4,7 @@ import 'package:attendance/utils/bloc/event.dart';
 import 'package:attendance/utils/bloc/state.dart';
 import 'package:attendance/api/auth/exceptions.dart';
 import 'package:attendance/helpers/popup_message.dart';
+import 'package:attendance/widget/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -51,9 +52,7 @@ class _LoginState extends State<Login> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Login"),
-        ),
+        appBar: MyAppBar(titleText: "Login"),
         body: Padding(
           padding: const EdgeInsets.only(left: 16, right: 16, top: 100),
           child: SingleChildScrollView(

@@ -16,6 +16,7 @@ import 'package:attendance/utils/attendace_submitting.dart';
 import 'package:attendance/utils/bloc/block.dart';
 import 'package:attendance/utils/bloc/event.dart';
 import 'package:attendance/utils/streaming.dart';
+import 'package:attendance/widget/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -116,40 +117,39 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Attendance"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed(locationRoute);
-            },
-            icon: const Icon(Icons.location_on),
-          ),
-          PopupMenuButton<MenuAction>(
-            onSelected: (value) async {
-              final read = context.read<AuthBloc>();
-              switch (value) {
-                case MenuAction.workday:
-                  Navigator.of(context).pushNamed(workdayListRoute);
-                  break;
-                case MenuAction.setting:
-                  Navigator.of(context).pushNamed(settingRoute);
-                  break;
-                case MenuAction.logout:
-                  final shouldLogout = await showLogOutDialog(context);
-                  if (shouldLogout) {
-                    read.add(const AuthEventLogOut());
-                  }
-                  break;
-              }
-            },
-            itemBuilder: (context) {
-              return popupMenuItem;
-            },
-          )
-        ],
+    List<Widget> actions = [
+      IconButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed(locationRoute);
+        },
+        icon: const Icon(Icons.location_on),
       ),
+      PopupMenuButton<MenuAction>(
+        onSelected: (value) async {
+          final read = context.read<AuthBloc>();
+          switch (value) {
+            case MenuAction.workday:
+              Navigator.of(context).pushNamed(workdayListRoute);
+              break;
+            case MenuAction.setting:
+              Navigator.of(context).pushNamed(settingRoute);
+              break;
+            case MenuAction.logout:
+              final shouldLogout = await showLogOutDialog(context);
+              if (shouldLogout) {
+                read.add(const AuthEventLogOut());
+              }
+              break;
+          }
+        },
+        itemBuilder: (context) {
+          return popupMenuItem;
+        },
+      )
+    ];
+
+    return Scaffold(
+      appBar: MyAppBar(titleText: "Attendance", actionList: actions),
       body: StreamBuilder(
           stream: _cloudService.allUserInfo,
           builder: (context, snapshot1) {

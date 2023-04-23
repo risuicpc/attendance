@@ -1,6 +1,7 @@
 import 'package:attendance/screens/attendance/setting_add.dart';
 import 'package:attendance/screens/attendance/setting_list.dart';
 import 'package:attendance/api/cloud/firebase_storage.dart';
+import 'package:attendance/widget/appbar.dart';
 import 'package:flutter/material.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -29,9 +30,7 @@ class _SettingScreenState extends State<SettingScreen> {
     return WillPopScope(
       onWillPop: _overrideBack,
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Settings"),
-        ),
+        appBar: MyAppBar(titleText: "Settings"),
         body: FutureBuilder(
           future: _cloudService.getSetting,
           builder: (BuildContext context, snapshot) {

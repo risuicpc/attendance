@@ -1,6 +1,7 @@
 import 'package:attendance/screens/attendance/workday_list.dart';
 import 'package:attendance/api/cloud/firebase_storage.dart';
 import 'package:attendance/api/cloud/user_workday.dart';
+import 'package:attendance/widget/appbar.dart';
 import 'package:flutter/material.dart';
 
 class Workday extends StatefulWidget {
@@ -25,9 +26,7 @@ class _WorkdayState extends State<Workday> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Workday"),
-      ),
+      appBar: MyAppBar(titleText: "Workday"),
       body: StreamBuilder<Object>(
           stream: _cloudService.allUserWorkday,
           builder: (context, snapshot) {
