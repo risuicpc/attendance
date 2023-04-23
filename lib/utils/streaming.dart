@@ -6,6 +6,8 @@ import 'package:attendance/api/cloud/setting.dart';
 Stream<bool> getAttendancePermission(bool emit) async* {
   bool prevValue = false;
 
+  yield prevValue;
+
   while (emit) {
     Setting? setting = await FirebaseStorage().getSetting;
     if (setting != null) {
