@@ -5,6 +5,7 @@ import 'package:attendance/api/cloud/setting.dart';
 
 Stream<bool> getAttendancePermission(bool emit) async* {
   bool prevValue = false;
+  await Future<void>.delayed(const Duration(seconds: 1));
 
   yield prevValue;
 

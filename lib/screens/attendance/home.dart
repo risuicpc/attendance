@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:attendance/api/auth/firebase_provider.dart';
 import 'package:attendance/api/auth/user.dart';
@@ -281,11 +282,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                     builder: (context, snapshot3) {
                                       switch (snapshot3.connectionState) {
                                         case ConnectionState.active:
-                                          if (snapshot3.hasData) {
+                                          if (snapshot3.hasData &&
+                                              snapshot3.data == true) {
                                             return ElevatedButton(
-                                              onPressed: snapshot3.data ?? false
-                                                  ? _handleSubmit
-                                                  : null,
+                                              onPressed: _handleSubmit,
                                               child: const Text(
                                                   "Submit Attendance"),
                                             );
