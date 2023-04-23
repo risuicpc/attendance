@@ -78,7 +78,7 @@ class _WorkdayEditState extends State<WorkdayEdit> {
     return Scaffold(
       appBar: MyAppBar(titleText: "Edit Workday"),
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Text(

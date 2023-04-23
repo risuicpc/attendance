@@ -15,11 +15,13 @@ Stream<bool> getAttendancePermission(bool emit) async* {
 
       bool currentValue = start.toTime.isAllowSubmitAttendance(end.toTime);
       if (prevValue != currentValue || first) {
-        first = false;
         prevValue = currentValue;
         yield currentValue;
       }
+    } else {
+      yield prevValue;
     }
     await Future<void>.delayed(const Duration(seconds: 1));
+    if (first) first = false;
   }
 }

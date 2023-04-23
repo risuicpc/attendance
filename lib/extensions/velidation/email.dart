@@ -8,12 +8,4 @@ extension EmailValidator on String {
   bool isNotValidEmail() {
     return !isValidEmail();
   }
-
-  bool isWhiteListedDomain() {
-    return toLowerCase().endsWith("@toptech.et");
-  }
-
-  bool isNotWhiteListedDomain() {
-    return !isWhiteListedDomain();
-  }
 }

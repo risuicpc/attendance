@@ -82,7 +82,7 @@ class WorkdayList extends StatelessWidget {
         Text(title),
         Icon(
           day ? Icons.work : Icons.home_work,
-          color: day ? Colors.black54 : Colors.blueGrey,
+          color: day ? Colors.amber.shade700 : Colors.blueGrey,
         ),
       ],
     );

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:attendance/api/auth/firebase_provider.dart';
 import 'package:attendance/api/auth/user.dart';
@@ -42,14 +41,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _setSettingPermission() async {
     bool sp = await _cloudService.isSettingPermissionAllow;
     if (sp) {
-      setState(() {
-        popupMenuItem.insert(
-            1,
-            const PopupMenuItem<MenuAction>(
-              value: MenuAction.setting,
-              child: Text("Setting"),
-            ));
-      });
+      popupMenuItem.insert(
+          1,
+          const PopupMenuItem<MenuAction>(
+            value: MenuAction.setting,
+            child: Text("Setting"),
+          ));
     }
   }
 
@@ -140,7 +137,6 @@ class _HomeScreenState extends State<HomeScreen> {
               if (shouldLogout) {
                 read.add(const AuthEventLogOut());
               }
-              break;
           }
         },
         itemBuilder: (context) {
@@ -173,150 +169,160 @@ class _HomeScreenState extends State<HomeScreen> {
                                 allUserInfo,
                                 allAttend.toList(),
                               );
-                            }
-                            return ListView(
-                              padding: const EdgeInsets.symmetric(vertical: 32),
-                              children: <Widget>[
-                                const Center(
-                                  child: Text(
-                                    'Employee Attendance',
-                                    style: TextStyle(
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
+                              return ListView(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 32),
+                                children: <Widget>[
+                                  const Center(
+                                    child: Text(
+                                      'Employee Attendance',
+                                      style: TextStyle(
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Table(
-                                    defaultVerticalAlignment:
-                                        TableCellVerticalAlignment.middle,
-                                    columnWidths: const {
-                                      1: FixedColumnWidth(100),
-                                      2: FixedColumnWidth(65),
-                                      3: FixedColumnWidth(50),
-                                    },
-                                    border: TableBorder(
-                                      horizontalInside: BorderSide(
-                                          color: Colors.grey.shade400,
-                                          width: 0.5),
-                                    ),
-                                    children: [
-                                      const TableRow(children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 25.0, top: 20, bottom: 10),
-                                          child: Text(
-                                            "Name",
+                                  Table(
+                                      defaultVerticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      columnWidths: const {
+                                        1: FixedColumnWidth(100),
+                                        2: FixedColumnWidth(65),
+                                        3: FixedColumnWidth(50),
+                                      },
+                                      border: TableBorder(
+                                        horizontalInside: BorderSide(
+                                            color: Colors.grey.shade400,
+                                            width: 0.5),
+                                      ),
+                                      children: [
+                                        const TableRow(children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                left: 25.0,
+                                                top: 20,
+                                                bottom: 10),
+                                            child: Text(
+                                              "Name",
+                                              style: TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          Text(
+                                            "Attend",
                                             style: TextStyle(
                                               fontSize: 16.0,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                        ),
-                                        Text(
-                                          "Attend",
-                                          style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Text(
-                                          "Absent",
-                                          style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Text(
-                                          "Late",
-                                          style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ]),
-                                      for (var userInfo in allUserInfo)
-                                        TableRow(children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                              left: 25,
-                                              top: 10,
-                                              bottom: 10,
-                                            ),
-                                            child: Text(
-                                              userInfo.userName,
-                                              style: const TextStyle(
-                                                fontSize: 15.0,
-                                                color: Color.fromARGB(
-                                                    193, 0, 0, 0),
-                                              ),
-                                            ),
-                                          ),
                                           Text(
-                                            attendText(userInfo.lastAttend),
+                                            "Absent",
                                             style: TextStyle(
-                                              fontSize: 15.0,
-                                              color: attendColor(
-                                                  userInfo.lastAttend),
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                           Text(
-                                            userInfo.numberOfAbsent.toString(),
-                                            style:
-                                                const TextStyle(fontSize: 15.0),
-                                          ),
-                                          Text(
-                                            userInfo.numberOfLate.toString(),
-                                            style:
-                                                const TextStyle(fontSize: 15.0),
+                                            "Late",
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ]),
-                                    ]),
-                                Container(
-                                  height: 110,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 32,
-                                    vertical: 32,
-                                  ),
-                                  child: StreamBuilder<bool>(
-                                    stream: getAttendancePermission(true),
-                                    builder: (context, snapshot3) {
-                                      switch (snapshot3.connectionState) {
-                                        case ConnectionState.active:
-                                          if (snapshot3.hasData &&
-                                              snapshot3.data == true) {
-                                            return ElevatedButton(
-                                              onPressed: _handleSubmit,
-                                              child: const Text(
-                                                  "Submit Attendance"),
-                                            );
-                                          } else {
-                                            return const ElevatedButton(
-                                              onPressed: null,
-                                              child: Text("Submit Attendance"),
-                                            );
-                                          }
-                                        default:
-                                          return ElevatedButton(
-                                            onPressed: () {},
-                                            child: const Center(
+                                        for (var userInfo in allUserInfo)
+                                          TableRow(children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 25,
+                                                top: 10,
+                                                bottom: 10,
+                                              ),
+                                              child: Text(
+                                                userInfo.userName,
+                                                style: const TextStyle(
+                                                  fontSize: 15.0,
+                                                  color: Color.fromARGB(
+                                                      193, 0, 0, 0),
+                                                ),
+                                              ),
+                                            ),
+                                            Text(
+                                              attendText(userInfo.lastAttend),
+                                              style: TextStyle(
+                                                fontSize: 15.0,
+                                                color: attendColor(
+                                                    userInfo.lastAttend),
+                                              ),
+                                            ),
+                                            Text(
+                                              userInfo.numberOfAbsent
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                  fontSize: 15.0),
+                                            ),
+                                            Text(
+                                              userInfo.numberOfLate.toString(),
+                                              style: const TextStyle(
+                                                  fontSize: 15.0),
+                                            ),
+                                          ]),
+                                      ]),
+                                  Container(
+                                    height: 110,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 32,
+                                      vertical: 32,
+                                    ),
+                                    child: StreamBuilder<bool>(
+                                      stream: getAttendancePermission(true),
+                                      builder: (context, snapshot3) {
+                                        switch (snapshot3.connectionState) {
+                                          case ConnectionState.active:
+                                            if (snapshot3.hasData &&
+                                                snapshot3.data == true) {
+                                              return ElevatedButton(
+                                                onPressed: _handleSubmit,
+                                                child: const Text(
+                                                    "Submit Attendance"),
+                                              );
+                                            } else {
+                                              return const ElevatedButton(
+                                                onPressed: null,
                                                 child:
-                                                    CircularProgressIndicator(
-                                              color: Colors.white,
-                                            )),
-                                          );
-                                      }
-                                    },
+                                                    Text("Submit Attendance"),
+                                              );
+                                            }
+                                          default:
+                                            return ElevatedButton(
+                                              onPressed: () {},
+                                              child: const Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                color: Colors.white,
+                                              )),
+                                            );
+                                        }
+                                      },
+                                    ),
                                   ),
-                                ),
-                              ],
-                            );
+                                ],
+                              );
+                            } else {
+                              return const Center(
+                                  child: Text(
+                                      "Registered employee is not available."));
+                            }
                           default:
                             return const Center(
                                 child: CircularProgressIndicator());
                         }
                       });
                 } else {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                      child: Text("Registered employee is not available."));
                 }
               default:
                 return const Center(child: CircularProgressIndicator());

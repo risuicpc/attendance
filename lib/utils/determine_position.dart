@@ -6,7 +6,7 @@ final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
 String errorMessage = "";
 
 Future<Position> getCurrentPosition() async {
-  final hasPermission = await _handlePermission();
+  final hasPermission = await handlePermission();
 
   if (!hasPermission) {
     throw errorMessage;
@@ -15,7 +15,7 @@ Future<Position> getCurrentPosition() async {
   return await Geolocator.getCurrentPosition();
 }
 
-Future<bool> _handlePermission() async {
+Future<bool> handlePermission() async {
   bool serviceEnabled;
   LocationPermission permission;
 

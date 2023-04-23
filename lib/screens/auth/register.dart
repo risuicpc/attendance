@@ -4,6 +4,7 @@ import 'package:attendance/utils/bloc/event.dart';
 import 'package:attendance/utils/bloc/state.dart';
 import 'package:attendance/api/auth/exceptions.dart';
 import 'package:attendance/helpers/popup_message.dart';
+import 'package:attendance/utils/determine_position.dart';
 import 'package:attendance/widget/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +22,12 @@ class _RegisterState extends State<Register> {
   late String _name;
   late String _password;
   bool _submitted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    handlePermission();
+  }
 
   void _submit() {
     if (!_submitted) setState(() => _submitted = true);
@@ -54,6 +61,9 @@ class _RegisterState extends State<Register> {
           } else if (state.exception is DeviceAlreadyInUseAuthException) {
             showErorr(context,
                 "This device is already registered to another user. Kindly utilize a different device!");
+          } else if (state.exception is EmailDomainAuthException) {
+            showErorr(
+                context, "This email address is not allowed to register.");
           }
         }
       },
@@ -111,9 +121,6 @@ class _RegisterState extends State<Register> {
                         }
                         if (value.isNotValidEmail()) {
                           return "Enter valid email address.";
-                        }
-                        if (value.isNotWhiteListedDomain()) {
-                          return "Only Toptech email addresses allowed for registration.";
                         }
                         return null;
                       },

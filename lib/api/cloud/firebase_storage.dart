@@ -14,6 +14,17 @@ class FirebaseStorage {
   static final _shared = FirebaseStorage._sharedInstance();
   FirebaseStorage._sharedInstance();
 
+  final _domain = FirebaseFirestore.instance.collection('domain');
+  Future<Iterable<String>> get getDomain async {
+    try {
+      return await _domain
+          .get()
+          .then((value) => value.docs.map((e) => e.data()['domain']));
+    } catch (_) {
+      return [];
+    }
+  }
+
   // CRUD FOR USERINFO
   final _userInfo = FirebaseFirestore.instance.collection('user-info');
 
@@ -138,14 +149,12 @@ class FirebaseStorage {
     }
   }
 
-  Future<bool> isPermissionAllowToUpdate({
-    required String id,
-    required String userId,
-  }) async {
+  Future<bool> get isPermissionAllowToUpdate async {
     try {
-      await _userWorkday.doc(id).update({
-        userIdFieldName: userId,
-      });
+      await _userWorkday.doc("id").get();
+      return true;
+    } on FirebaseException catch (e) {
+      if (e.code == "permission-denied") return false;
       return true;
     } catch (_) {
       return false;
@@ -219,6 +228,8 @@ class FirebaseStorage {
     } on FirebaseException catch (e) {
       if (e.code == "permission-denied") return false;
       return true;
+    } catch (_) {
+      return false;
     }
   }
 
@@ -379,6 +390,8 @@ class FirebaseStorage {
     } on FirebaseException catch (e) {
       if (e.code == "permission-denied") return false;
       return true;
+    } catch (_) {
+      return false;
     }
   }
 }

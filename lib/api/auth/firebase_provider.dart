@@ -1,9 +1,9 @@
-import 'package:attendance/extensions/strings.dart';
-import 'package:attendance/firebase.dart';
 import 'package:attendance/api/auth/exceptions.dart';
 import 'package:attendance/api/auth/provider.dart';
 import 'package:attendance/api/auth/user.dart';
 import 'package:attendance/api/cloud/firebase_storage.dart';
+import 'package:attendance/extensions/strings.dart';
+import 'package:attendance/firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart'
     show FirebaseAuth, FirebaseAuthException;
 import 'package:firebase_core/firebase_core.dart' show Firebase;
@@ -26,6 +26,14 @@ class FirebaseAuthProvider implements AuthProvider {
     required String name,
     required String password,
   }) async {
+    bool validDomain = false;
+    final domain = await FirebaseStorage().getDomain;
+    for (String dm in domain) {
+      validDomain |= email.endsWith(dm);
+    }
+
+    if (!validDomain) throw EmailDomainAuthException();
+
     final isDeviceInUse = await FirebaseStorage().isTheDeviceRegistered;
     if (isDeviceInUse) {
       throw DeviceAlreadyInUseAuthException();

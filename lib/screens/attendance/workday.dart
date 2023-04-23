@@ -13,39 +13,43 @@ class Workday extends StatefulWidget {
 
 class _WorkdayState extends State<Workday> {
   final _cloudService = FirebaseStorage();
-  late bool _permission = false;
-  late int _step = 1;
-
-  void setPermission(id, userId) async {
-    final perm =
-        await _cloudService.isPermissionAllowToUpdate(id: id, userId: userId);
-    setState(() => _permission = perm);
-    _step--;
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(titleText: "Workday"),
-      body: StreamBuilder<Object>(
+      body: StreamBuilder(
           stream: _cloudService.allUserWorkday,
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
               case ConnectionState.active:
                 if (snapshot.hasData) {
                   final allUserWorkday = snapshot.data as Iterable<UserWorkday>;
-                  if (allUserWorkday.isNotEmpty && _step > 0) {
-                    setPermission(
-                      allUserWorkday.elementAt(0).id,
-                      allUserWorkday.elementAt(0).userId,
-                    );
-                  }
 
-                  return WorkdayList(
-                    allWorkday: allUserWorkday,
-                    permission: _permission,
-                  );
+                  if (allUserWorkday.isNotEmpty) {
+                    return FutureBuilder<bool>(
+                      future: _cloudService.isPermissionAllowToUpdate,
+                      builder: (context, snapshot1) {
+                        switch (snapshot1.connectionState) {
+                          case ConnectionState.done:
+                            if (snapshot1.hasData) {
+                              return WorkdayList(
+                                allWorkday: allUserWorkday,
+                                permission: snapshot1.data ?? false,
+                              );
+                            } else {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            }
+                          default:
+                            return const Center(
+                                child: CircularProgressIndicator());
+                        }
+                      },
+                    );
+                  } else {
+                    return const Center(child: Text("No data."));
+                  }
                 } else {
                   return const Center(child: CircularProgressIndicator());
                 }
