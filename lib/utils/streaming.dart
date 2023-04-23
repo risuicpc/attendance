@@ -5,9 +5,7 @@ import 'package:attendance/api/cloud/setting.dart';
 
 Stream<bool> getAttendancePermission(bool emit) async* {
   bool prevValue = false;
-  await Future<void>.delayed(const Duration(seconds: 1));
-
-  yield prevValue;
+  bool first = true;
 
   while (emit) {
     Setting? setting = await FirebaseStorage().getSetting;
@@ -16,7 +14,8 @@ Stream<bool> getAttendancePermission(bool emit) async* {
       String end = setting.endTime;
 
       bool currentValue = start.toTime.isAllowSubmitAttendance(end.toTime);
-      if (prevValue != currentValue) {
+      if (prevValue != currentValue || first) {
+        first = false;
         prevValue = currentValue;
         yield currentValue;
       }
