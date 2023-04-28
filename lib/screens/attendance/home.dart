@@ -30,7 +30,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   AuthUser get _user => FirebaseAuthProvider().currentUser!;
   final _cloudService = FirebaseStorage();
-  UserInfo? currentUserinfo;
+  UserInfo? _currentUserinfo;
 
   @override
   void initState() {
@@ -51,14 +51,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _setThisUser(Iterable<UserInfo> allInfo) async {
-    currentUserinfo = allInfo.firstWhereOrNull((e) => e.userId == _user.id);
-    if (currentUserinfo == null) {
+    _currentUserinfo = allInfo.firstWhereOrNull((e) => e.userId == _user.id);
+    if (_currentUserinfo == null) {
       try {
         await _cloudService.createUserInfo(
           userId: _user.id,
           userName: _user.name ?? "No name",
         );
-        currentUserinfo = await _cloudService.getUserInfo(userId: _user.id);
+        _currentUserinfo = await _cloudService.getUserInfo(userId: _user.id);
       } catch (_) {}
     }
   }
@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _handleSubmit() async {
     String? successMsg;
     try {
-      await attendanceSubmitting(context, currentUserinfo);
+      await attendanceSubmitting(context, _currentUserinfo);
       successMsg = "The attendance was submitted successfully.";
     } catch (e) {
       showErorr(context, e.toString());

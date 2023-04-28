@@ -6,6 +6,7 @@ import 'package:attendance/api/cloud/user_info.dart';
 import 'package:attendance/api/cloud/user_workday.dart';
 import 'package:attendance/constants/cloud_storage.dart';
 import 'package:attendance/extensions/date_time.dart';
+import 'package:attendance/utils/date_time.dart';
 import 'package:attendance/utils/device_info.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -279,9 +280,15 @@ class FirebaseStorage {
     required DateTime day,
     required String status,
   }) async {
+    late DateTime now = DateTime.now();
+    try {
+      final currentTime = await currentLocalTime;
+      now = currentTime;
+    } catch (_) {}
+
     final today = await getAttendace(userId: userId);
     if (today != null) {
-      if (DateTime.now().isAtSameDayAs(today.day)) {
+      if (now.isAtSameDayAs(today.day)) {
         throw AlreadyCreatedException();
       }
     }

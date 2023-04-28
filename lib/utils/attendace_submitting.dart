@@ -7,6 +7,7 @@ import 'package:attendance/api/auth/user.dart';
 import 'package:attendance/api/cloud/firebase_storage.dart';
 import 'package:attendance/api/cloud/storage_exceptions.dart';
 import 'package:attendance/api/cloud/user_info.dart';
+import 'package:attendance/utils/date_time.dart';
 import 'package:attendance/utils/validation.dart';
 import 'package:flutter/material.dart';
 
@@ -36,14 +37,14 @@ Future<void> attendanceSubmitting(
     throw e.toString();
   }
 
-  if (context.mounted) {
-    LoadingScreen().show(context: context, text: "Location Validating");
-  }
-  try {
-    await locationValidation();
-  } catch (e) {
-    throw e.toString();
-  }
+  // if (context.mounted) {
+  //   LoadingScreen().show(context: context, text: "Location Validating");
+  // }
+  // try {
+  //   await locationValidation();
+  // } catch (e) {
+  //   throw e.toString();
+  // }
 
   if (context.mounted) {
     LoadingScreen().show(context: context, text: "Time Validating");
@@ -77,8 +78,14 @@ Future<void> attendanceSubmitting(
     LoadingScreen().show(context: context, text: "Submitting...");
   }
 
+  late DateTime now = DateTime.now();
+  try {
+    final currentTime = await currentLocalTime;
+    now = currentTime;
+  } catch (_) {}
+
   lateUntilToday += isLate ? 1 : 0;
-  if (!workday.today(DateTime.now().weekDay)) {
+  if (!workday.today(now.weekDay)) {
     absentUntilToday > 0
         ? absentUntilToday -= 1
         : lateUntilToday = max(0, lateUntilToday - 3);
@@ -86,7 +93,7 @@ Future<void> attendanceSubmitting(
   try {
     await cloudService.addAttendace(
       userId: user.id,
-      day: DateTime.now(),
+      day: now,
       status: isLate ? "late" : "present",
     );
     await cloudService.updateUserInfo(

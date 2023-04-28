@@ -51,9 +51,8 @@ extension TimeOfDayExtension on TimeOfDay {
     return currentTimeInt < otherTimeInt;
   }
 
-  bool isAllowSubmitAttendance(TimeOfDay end) {
-    return !((isBefore(end) &&
-            (TimeOfDay.now().isBefore(this) || TimeOfDay.now().isAfter(end))) ||
-        (TimeOfDay.now().isAfter(end) && TimeOfDay.now().isBefore(this)));
+  bool isAllowSubmitAttendance(TimeOfDay now, TimeOfDay end) {
+    return !((isBefore(end) && (now.isBefore(this) || now.isAfter(end))) ||
+        (now.isAfter(end) && now.isBefore(this)));
   }
 }

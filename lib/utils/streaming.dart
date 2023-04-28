@@ -2,6 +2,8 @@ import 'package:attendance/extensions/date_time.dart';
 import 'package:attendance/extensions/strings.dart';
 import 'package:attendance/api/cloud/firebase_storage.dart';
 import 'package:attendance/api/cloud/setting.dart';
+import 'package:attendance/utils/date_time.dart';
+import 'package:flutter/material.dart' show TimeOfDay;
 
 Stream<bool> getAttendancePermission(bool emit) async* {
   bool prevValue = false;
@@ -13,7 +15,16 @@ Stream<bool> getAttendancePermission(bool emit) async* {
       String start = setting.startTime;
       String end = setting.endTime;
 
-      bool currentValue = start.toTime.isAllowSubmitAttendance(end.toTime);
+      late TimeOfDay now = TimeOfDay(
+        hour: DateTime.now().hour,
+        minute: DateTime.now().second,
+      );
+      try {
+        final currentTime = await currentLocalTime;
+        now = TimeOfDay(hour: currentTime.hour, minute: currentTime.second);
+      } catch (_) {}
+
+      bool currentValue = start.toTime.isAllowSubmitAttendance(now, end.toTime);
       if (prevValue != currentValue || first) {
         prevValue = currentValue;
         yield currentValue;

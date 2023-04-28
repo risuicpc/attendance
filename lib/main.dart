@@ -91,3 +91,11 @@ class BlocPage extends StatelessWidget {
     );
   }
 }
+
+
+
+// utc time
+
+// calendar
+// internet connection
+// google map
