@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
       try {
         await _cloudService.createUserInfo(
           userId: _user.id,
-          userName: _user.name!,
+          userName: _user.name ?? "No name",
         );
         currentUserinfo = await _cloudService.getUserInfo(userId: _user.id);
       } catch (_) {}

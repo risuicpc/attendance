@@ -21,43 +21,49 @@ class FirebaseAuthProvider implements AuthProvider {
   }
 
   @override
-  Future<AuthUser> createUser({
+  Future<void> createUser({
     required String email,
     required String name,
     required String password,
   }) async {
-    bool validDomain = false;
-    final domain = await FirebaseStorage().getDomain;
+    final cloudService = FirebaseStorage();
+
+    // Validate email domain
+    final domain = await cloudService.getDomain;
+    bool validDomain = domain.isEmpty;
     for (String dm in domain) {
       validDomain |= email.endsWith(dm);
     }
-
     if (!validDomain) throw EmailDomainAuthException();
 
-    final isDeviceInUse = await FirebaseStorage().isTheDeviceRegistered;
+    // Validate device
+    final isDeviceInUse = await cloudService.isTheDeviceRegistered;
     if (isDeviceInUse) {
       throw DeviceAlreadyInUseAuthException();
     }
+
     try {
-      final users = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      final instance =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      await users.user?.sendEmailVerification();
-      await users.user?.updateDisplayName(name.capitalize());
-      final user = currentUser;
-      if (user == null) throw UserNotLoggedInAuthException();
+      await instance.user?.sendEmailVerification();
+      await instance.user?.updateDisplayName(name.capitalize());
+
       try {
-        FirebaseStorage().createUserInfo(
+        final user = currentUser;
+        if (user == null) throw UserNotLoggedInAuthException();
+
+        cloudService.createUserInfo(
           userId: user.id,
-          userName: user.name!,
+          userName: user.name ?? "No name",
         );
-        FirebaseStorage().createUserWorkday(
+        cloudService.createUserWorkday(
           userId: user.id,
-          userName: user.name!,
+          userName: user.name ?? "No name",
         );
       } catch (_) {}
-      return user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         throw WeakPasswordAuthException();

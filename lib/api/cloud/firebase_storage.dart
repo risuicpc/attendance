@@ -68,6 +68,9 @@ class FirebaseStorage {
   Future<bool> get isTheDeviceRegistered async {
     try {
       final deviceInfo = await getDeviceInfo();
+      if (deviceInfo.androidId == "Unknown ID" ||
+          deviceInfo.deviceId == "Unknown ID") return false;
+
       final exist = await _userInfo
           .where(deviceIdFieldName, isEqualTo: deviceInfo.deviceId)
           .where(androidIdFieldName, isEqualTo: deviceInfo.androidId)

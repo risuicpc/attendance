@@ -64,6 +64,9 @@ class _RegisterState extends State<Register> {
           } else if (state.exception is EmailDomainAuthException) {
             showErorr(
                 context, "This email address is not allowed to register.");
+          } else if (state.exception is UserNotLoggedInAuthException) {
+            showErorr(
+                context, "Something is wrong in the registration proccess!");
           }
         }
       },

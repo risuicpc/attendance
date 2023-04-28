@@ -62,7 +62,7 @@ Future<void> attendanceSubmitting(
     try {
       await cloudService.createUserWorkday(
         userId: user.id,
-        userName: user.name!,
+        userName: user.name ?? "No name",
       );
       workday = await cloudService.getUserWorkday(userId: user.id);
       if (workday == null) {
