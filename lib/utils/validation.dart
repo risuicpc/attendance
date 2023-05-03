@@ -7,6 +7,7 @@ import 'package:attendance/extensions/strings.dart';
 import 'package:attendance/utils/determine_position.dart';
 import 'package:attendance/utils/device_info.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 Future<int> checkPrevAttendance(UserInfo userInfo, DateTime now) async {
   final storage = FirebaseStorage();
@@ -21,7 +22,12 @@ Future<int> checkPrevAttendance(UserInfo userInfo, DateTime now) async {
 
     while (last.isLessThen(yesterday)) {
       last = last.add(const Duration(days: 1));
+      String formattedTime = DateFormat.yMd().format(last);
+      DateTime lastFormatted = DateFormat.yMd().parse(formattedTime);
+      final lastCalendar = await storage.getCalendar(lastFormatted);
+
       if (workday != null && workday.today(last.weekDay)) {
+        if (lastCalendar != null && !lastCalendar.workday) continue;
         try {
           await storage.addAttendace(
             userId: userInfo.userId,
