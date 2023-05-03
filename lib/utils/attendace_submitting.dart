@@ -1,15 +1,16 @@
 import 'dart:math' show max;
 
-import 'package:attendance/extensions/date_time.dart';
-import 'package:attendance/helpers/loading/loading_screen.dart';
 import 'package:attendance/api/auth/firebase_provider.dart';
 import 'package:attendance/api/auth/user.dart';
 import 'package:attendance/api/cloud/firebase_storage.dart';
 import 'package:attendance/api/cloud/storage_exceptions.dart';
 import 'package:attendance/api/cloud/user_info.dart';
+import 'package:attendance/extensions/date_time.dart';
+import 'package:attendance/helpers/loading/loading_screen.dart';
 import 'package:attendance/utils/date_time.dart';
 import 'package:attendance/utils/validation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 Future<void> attendanceSubmitting(
   BuildContext context,
@@ -17,6 +18,7 @@ Future<void> attendanceSubmitting(
 ) async {
   AuthUser user = FirebaseAuthProvider().currentUser!;
   final cloudService = FirebaseStorage();
+  final now = await currentLocalTime;
   bool isLate = false;
 
   if (userInfo == null) {
@@ -25,8 +27,10 @@ Future<void> attendanceSubmitting(
   int lateUntilToday = userInfo.numberOfLate;
   int absentUntilToday = userInfo.numberOfAbsent;
 
-  LoadingScreen().show(context: context, text: "Checking prev...");
-  absentUntilToday += await checkPrevAttendance(userInfo);
+  if (context.mounted) {
+    LoadingScreen().show(context: context, text: "Checking prev...");
+  }
+  absentUntilToday += await checkPrevAttendance(userInfo, now);
 
   if (context.mounted) {
     LoadingScreen().show(context: context, text: "Device Validating");
@@ -37,20 +41,20 @@ Future<void> attendanceSubmitting(
     throw e.toString();
   }
 
-  // if (context.mounted) {
-  //   LoadingScreen().show(context: context, text: "Location Validating");
-  // }
-  // try {
-  //   await locationValidation();
-  // } catch (e) {
-  //   throw e.toString();
-  // }
+  if (context.mounted) {
+    LoadingScreen().show(context: context, text: "Location Validating");
+  }
+  try {
+    await locationValidation();
+  } catch (e) {
+    throw e.toString();
+  }
 
   if (context.mounted) {
     LoadingScreen().show(context: context, text: "Time Validating");
   }
   try {
-    isLate = await timeValidation();
+    isLate = await timeValidation(now);
   } catch (e) {
     throw e.toString();
   }
@@ -78,14 +82,13 @@ Future<void> attendanceSubmitting(
     LoadingScreen().show(context: context, text: "Submitting...");
   }
 
-  late DateTime now = DateTime.now();
-  try {
-    final currentTime = await currentLocalTime;
-    now = currentTime;
-  } catch (_) {}
+  String formattedTime = DateFormat.yMd().format(now);
+  DateTime today = DateFormat.yMd().parse(formattedTime);
+  final todayCalendar = await cloudService.getCalendar(today);
 
   lateUntilToday += isLate ? 1 : 0;
-  if (!workday.today(now.weekDay)) {
+  if (!workday.today(now.weekDay) ||
+      (todayCalendar != null && !todayCalendar.workday)) {
     absentUntilToday > 0
         ? absentUntilToday -= 1
         : lateUntilToday = max(0, lateUntilToday - 3);

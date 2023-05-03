@@ -1,3 +1,4 @@
+import 'package:attendance/constants/routes.dart';
 import 'package:attendance/extensions/strings.dart';
 import 'package:attendance/api/cloud/setting.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +67,14 @@ class ListSetting extends StatelessWidget {
             onPressed: () => setNotify(true),
             icon: const Icon(Icons.edit),
             label: const Text("Change the attendance time."),
-          )
+          ),
+          TextButton.icon(
+            onPressed: () {
+              Navigator.of(context).pushNamed(companyCalendarRoute);
+            },
+            icon: const Icon(Icons.edit_calendar),
+            label: const Text("Change the company calendar."),
+          ),
         ],
       ),
     );

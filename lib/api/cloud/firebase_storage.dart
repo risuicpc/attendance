@@ -1,4 +1,5 @@
 import 'package:attendance/api/cloud/atendance.dart';
+import 'package:attendance/api/cloud/calendar.dart';
 import 'package:attendance/api/cloud/office_location.dart';
 import 'package:attendance/api/cloud/setting.dart';
 import 'package:attendance/api/cloud/storage_exceptions.dart';
@@ -280,12 +281,7 @@ class FirebaseStorage {
     required DateTime day,
     required String status,
   }) async {
-    late DateTime now = DateTime.now();
-    try {
-      final currentTime = await currentLocalTime;
-      now = currentTime;
-    } catch (_) {}
-
+    final now = await currentLocalTime;
     final today = await getAttendace(userId: userId);
     if (today != null) {
       if (now.isAtSameDayAs(today.day)) {
@@ -402,6 +398,81 @@ class FirebaseStorage {
       return true;
     } catch (_) {
       return false;
+    }
+  }
+
+  // CRUD FOR CALENDAR
+  final batch = FirebaseFirestore.instance.batch();
+  final _calendar = FirebaseFirestore.instance.collection('calendar');
+
+  Future<Iterable<Calendar>> initCalendar(int year) async {
+    try {
+      List<Calendar> calendar = [];
+      DateTime date = DateTime(year);
+
+      while (date.year == year) {
+        bool workday = date.weekday != 7;
+        var nycRef = _calendar.doc();
+        batch.set(nycRef, {dateFieldName: date, workdayFieldName: workday});
+        calendar.add(Calendar(id: nycRef.id, date: date, workday: workday));
+        date = date.add(const Duration(days: 1));
+      }
+      await batch.commit();
+      return calendar;
+    } catch (_) {
+      throw Exception("Error");
+    }
+  }
+
+  Future<List<List<List<Calendar>>>?> get listCalendar async {
+    final year = (await currentLocalTime).year;
+
+    try {
+      final current = DateTime(year);
+      final next = DateTime(year + 1);
+
+      Iterable<Calendar> calendar = await _calendar
+          .where(dateFieldName, isGreaterThanOrEqualTo: current)
+          .where(dateFieldName, isLessThan: next)
+          .get()
+          .then((value) => value.docs.map((e) => Calendar.fromSnapshot(e)));
+
+      if (calendar.isEmpty) calendar = await initCalendar(year);
+      return fromListOfCalendar(calendar);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> updateCalendar({
+    required String id,
+    required bool workday,
+  }) async {
+    try {
+      await _calendar.doc(id).update({
+        workdayFieldName: workday,
+      });
+    } on FirebaseException catch (e) {
+      switch (e.code) {
+        case "permission-denied":
+          throw PermissionDeniedException();
+        default:
+          throw CouldNotUpdateException();
+      }
+    } catch (_) {
+      throw CouldNotUpdateException();
+    }
+  }
+
+  Future<Calendar?> getCalendar(DateTime today) async {
+    try {
+      final calendar = await _calendar
+          .where(dateFieldName, isEqualTo: today)
+          .get()
+          .then((value) => value.docs.map((e) => Calendar.fromSnapshot(e)));
+      return calendar.first;
+    } catch (_) {
+      return null;
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:attendance/constants/routes.dart';
 import 'package:attendance/helpers/loading/loading_screen.dart';
+import 'package:attendance/screens/attendance/company_calendar.dart';
 import 'package:attendance/screens/attendance/location.dart';
 import 'package:attendance/screens/attendance/home.dart';
 import 'package:attendance/screens/attendance/setting.dart';
@@ -35,6 +36,7 @@ void main() {
         locationRoute: (context) => const Location(),
         settingRoute: (context) => const SettingScreen(),
         workdayListRoute: (context) => const Workday(),
+        companyCalendarRoute: (context) => const CompanyCalendar()
       },
       onGenerateRoute: (settings) {
         if (settings.name == workdayEditRoute) {
@@ -93,8 +95,6 @@ class BlocPage extends StatelessWidget {
 }
 
 
-
-// utc time
 
 // calendar
 // internet connection

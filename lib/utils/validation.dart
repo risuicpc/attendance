@@ -1,21 +1,15 @@
 import 'dart:math' show sin, cos, pi, asin, sqrt;
 
-import 'package:attendance/extensions/date_time.dart';
-import 'package:attendance/extensions/strings.dart';
 import 'package:attendance/api/cloud/firebase_storage.dart';
 import 'package:attendance/api/cloud/user_info.dart';
-import 'package:attendance/utils/date_time.dart';
+import 'package:attendance/extensions/date_time.dart';
+import 'package:attendance/extensions/strings.dart';
 import 'package:attendance/utils/determine_position.dart';
 import 'package:attendance/utils/device_info.dart';
 import 'package:flutter/material.dart';
 
-Future<int> checkPrevAttendance(UserInfo userInfo) async {
+Future<int> checkPrevAttendance(UserInfo userInfo, DateTime now) async {
   final storage = FirebaseStorage();
-  late DateTime now = DateTime.now();
-  try {
-    final currentTime = await currentLocalTime;
-    now = currentTime;
-  } catch (_) {}
 
   final lastAtend = await storage.getAttendace(userId: userInfo.userId);
   final yesterday = now.subtract(const Duration(days: 1));
@@ -81,20 +75,16 @@ Future<void> locationValidation() async {
   }
 }
 
-Future<bool> timeValidation() async {
+Future<bool> timeValidation(DateTime currentTime) async {
   final setting = await FirebaseStorage().getSetting;
   if (setting == null) {
     throw 'Attendance timestamp not set. Please contact staff.';
   }
 
   late TimeOfDay now = TimeOfDay(
-    hour: DateTime.now().hour,
-    minute: DateTime.now().second,
+    hour: currentTime.hour,
+    minute: currentTime.second,
   );
-  try {
-    final currentTime = await currentLocalTime;
-    now = TimeOfDay(hour: currentTime.hour, minute: currentTime.second);
-  } catch (_) {}
 
   final startTime = setting.startTime.toTime;
   final lateTime = setting.lateTime.toTime;

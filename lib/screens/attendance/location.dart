@@ -23,12 +23,13 @@ class _LocationState extends State<Location> {
   }
 
   Future<void> setPermission() async {
-    final permission = await _cloudService.isLocationPermissionAllow;
-    setState(() => _editPermissionAllow = permission);
+    _editPermissionAllow = await _cloudService.isLocationPermissionAllow;
+    setState(() {});
   }
 
   void setUpdatState(bool newValeu) {
-    setState(() => _updating = newValeu);
+    _updating = newValeu;
+    setState(() {});
   }
 
   Future<bool> _overrideBack() async {
@@ -100,7 +101,7 @@ class _LocationState extends State<Location> {
               _editPermissionAllow
                   ? TextButton.icon(
                       onPressed: () => setUpdatState(true),
-                      icon: const Icon(Icons.edit),
+                      icon: const Icon(Icons.edit_location_alt),
                       label: const Text("Change the office location."),
                     )
                   : const SizedBox()

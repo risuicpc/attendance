@@ -23,3 +23,5 @@ const officeNameFieldName = "office_name";
 const latitudeFieldName = "latitude";
 const longitudeFieldName = "longtude";
 const distanceFieldName = "distance";
+const dateFieldName = "date";
+const workdayFieldName = "workday";
