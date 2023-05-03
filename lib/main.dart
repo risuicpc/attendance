@@ -95,7 +95,5 @@ class BlocPage extends StatelessWidget {
 }
 
 
-
-// calendar
 // internet connection
 // google map
