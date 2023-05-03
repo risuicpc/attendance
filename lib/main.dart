@@ -1,4 +1,5 @@
 import 'package:attendance/constants/routes.dart';
+import 'package:attendance/helpers/loading/loading_background.dart';
 import 'package:attendance/helpers/loading/loading_screen.dart';
 import 'package:attendance/screens/attendance/company_calendar.dart';
 import 'package:attendance/screens/attendance/location.dart';
@@ -15,6 +16,7 @@ import 'package:attendance/utils/bloc/event.dart';
 import 'package:attendance/utils/bloc/state.dart';
 import 'package:attendance/api/auth/firebase_provider.dart';
 import 'package:attendance/api/cloud/user_workday.dart';
+import 'package:attendance/widget/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -85,8 +87,9 @@ class BlocPage extends StatelessWidget {
         } else if (state is AuthStateRegister) {
           return const Register();
         } else {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+          return Scaffold(
+            appBar: MyAppBar(titleText: ""),
+            body: const BackgroundImage(),
           );
         }
       },

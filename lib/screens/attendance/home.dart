@@ -10,6 +10,7 @@ import 'package:attendance/enums/action.dart' show MenuAction;
 import 'package:attendance/extensions/date_time.dart';
 import 'package:attendance/extensions/iterable.dart';
 import 'package:attendance/helpers/dialogs/logot_dialog.dart';
+import 'package:attendance/helpers/loading/loading_background.dart';
 import 'package:attendance/helpers/loading/loading_screen.dart';
 import 'package:attendance/helpers/popup_message.dart';
 import 'package:attendance/utils/attendace_submitting.dart';
@@ -316,8 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       "Registered employee is not available."));
                             }
                           default:
-                            return const Center(
-                                child: CircularProgressIndicator());
+                            return const BackgroundImage();
                         }
                       });
                 } else {
@@ -325,7 +325,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Text("Registered employee is not available."));
                 }
               default:
-                return const Center(child: CircularProgressIndicator());
+                return const BackgroundImage();
             }
           }),
     );
