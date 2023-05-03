@@ -1,12 +1,13 @@
+import 'package:attendance/api/auth/firebase_provider.dart';
+import 'package:attendance/api/cloud/user_workday.dart';
 import 'package:attendance/constants/routes.dart';
-import 'package:attendance/helpers/loading/loading_background.dart';
 import 'package:attendance/helpers/loading/loading_screen.dart';
 import 'package:attendance/screens/attendance/company_calendar.dart';
-import 'package:attendance/screens/attendance/location.dart';
 import 'package:attendance/screens/attendance/home.dart';
+import 'package:attendance/screens/attendance/location.dart';
 import 'package:attendance/screens/attendance/setting.dart';
-import 'package:attendance/screens/attendance/workday_edit.dart';
 import 'package:attendance/screens/attendance/workday.dart';
+import 'package:attendance/screens/attendance/workday_edit.dart';
 import 'package:attendance/screens/auth/forgot_password.dart';
 import 'package:attendance/screens/auth/login.dart';
 import 'package:attendance/screens/auth/register.dart';
@@ -14,8 +15,6 @@ import 'package:attendance/screens/auth/verify_email.dart';
 import 'package:attendance/utils/bloc/block.dart';
 import 'package:attendance/utils/bloc/event.dart';
 import 'package:attendance/utils/bloc/state.dart';
-import 'package:attendance/api/auth/firebase_provider.dart';
-import 'package:attendance/api/cloud/user_workday.dart';
 import 'package:attendance/widget/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -87,10 +86,7 @@ class BlocPage extends StatelessWidget {
         } else if (state is AuthStateRegister) {
           return const Register();
         } else {
-          return Scaffold(
-            appBar: MyAppBar(titleText: ""),
-            body: const BackgroundImage(),
-          );
+          return Scaffold(appBar: MyAppBar(titleText: ""));
         }
       },
     );
